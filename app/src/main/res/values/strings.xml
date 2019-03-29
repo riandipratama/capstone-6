@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">CAPSTONE</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="tab_label1">CUSTOMER</string>
+    <string name="tab_label2">VENDOR</string>
 </resources>

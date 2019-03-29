@@ -1,180 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Signup"
-    android:orientation="vertical">
+    android:id="@+id/activity_signup">
 
-    <ScrollView
+    <android.support.design.widget.TabLayout
+        android:id="@+id/tab_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="@style/ThemeOverlay.AppCompat.Light"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+    <android.support.v4.view.ViewPager
+        android:id="@+id/pager"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tab_layout" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="SIGNUP"
-                android:layout_margin="32dp"
-                android:textAlignment="gravity"
-                android:textStyle="bold"
-                android:textSize="40sp"/>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Username :"
-                android:textSize="26sp"
-                android:layout_marginLeft="32dp"/>
-
-            <EditText
-                android:id="@+id/etUser"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Isi Username Anda"
-                android:layout_marginLeft="32dp"
-                android:layout_marginRight="32dp"
-                android:layout_marginBottom="64dp"
-                android:inputType="text"/>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Password :"
-                android:textSize="26sp"
-                android:layout_marginLeft="32dp"/>
-
-            <EditText
-                android:id="@+id/etPass"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Isi Password Anda"
-                android:layout_marginLeft="32dp"
-                android:layout_marginRight="32dp"
-                android:layout_marginBottom="64dp"
-                android:inputType="textPassword"/>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Ulangi Password :"
-                android:textSize="26sp"
-                android:layout_marginLeft="32dp"/>
-
-            <EditText
-                android:id="@+id/etPassRepeat"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Ulangi Password Anda"
-                android:layout_marginLeft="32dp"
-                android:layout_marginRight="32dp"
-                android:layout_marginBottom="64dp"
-                android:inputType="textPassword"/>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Nama Lengkap :"
-                android:textSize="26sp"
-                android:layout_marginLeft="32dp"/>
-
-            <EditText
-                android:id="@+id/etFullName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Nama Lengkap Anda"
-                android:layout_marginLeft="32dp"
-                android:layout_marginRight="32dp"
-                android:layout_marginBottom="64dp"
-                android:inputType="text"/>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="No. Telepon :"
-                android:textSize="26sp"
-                android:layout_marginLeft="32dp"/>
-
-            <EditText
-                android:id="@+id/etPhone"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Isi Nomor Telepon Anda"
-                android:layout_marginLeft="32dp"
-                android:layout_marginRight="32dp"
-                android:layout_marginBottom="64dp"
-                android:inputType="phone"/>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Alamat :"
-                android:textSize="26sp"
-                android:layout_marginLeft="32dp"/>
-
-            <EditText
-                android:id="@+id/etAddress"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Isi Alamat Anda"
-                android:layout_marginLeft="32dp"
-                android:layout_marginRight="32dp"
-                android:layout_marginBottom="64dp"
-                android:inputType="textMultiLine"
-                android:ems="10"/>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="No. Telepon :"
-                android:textSize="26sp"
-                android:layout_marginLeft="32dp"/>
-
-            <EditText
-                android:id="@+id/etEmail"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Isi E-Mail Anda"
-                android:layout_marginLeft="32dp"
-                android:layout_marginRight="32dp"
-                android:layout_marginBottom="64dp"
-                android:inputType="textEmailAddress"/>
-
-            <Button
-                android:id="@+id/btnSignup"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:layout_marginLeft="48dp"
-                android:layout_marginRight="48dp"
-                android:layout_marginBottom="8dp"
-                android:text="SIGNUP"/>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Sudah punya akun?"
-                android:textSize="26sp"
-                android:textAlignment="center"/>
-
-            <TextView
-                android:id="@+id/signin"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Masuk Sekarang!"
-                android:layout_marginBottom="32dp"
-                android:textColor="@android:color/holo_blue_dark"
-                android:textStyle="italic"
-                android:textSize="26sp"
-                android:textAlignment="center"/>
-
-        </LinearLayout>
-
-    </ScrollView>
-
-</LinearLayout>
+</RelativeLayout>
