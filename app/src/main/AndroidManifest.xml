@@ -9,6 +9,21 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/SplashTheme">
+        <activity android:name=".SearchActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+            <meta-data android:name="android.app.searchable"
+                android:resource="@xml/searchables"/>
+        </activity>
+
+        <meta-data
+            android:name="com.google.android.actions"
+            android:resource="@xml/searchables" />
+
+        <activity
+            android:name=".MainActivity"
+            android:theme="@style/SplashTheme.NoActionBar" />
         <activity android:name=".SignIn">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -17,8 +32,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".Signup" />
-        <activity android:name=".MainActivity">
-        </activity>
     </application>
 
 </manifest>

@@ -1,8 +1,11 @@
-package com.example.capstone;
+package com.example.capstone.Util;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+
+import com.example.capstone.register_cust;
+import com.example.capstone.register_vendor;
 
 public class PagerAdapter extends FragmentStatePagerAdapter {
     int mNumOfTabs;

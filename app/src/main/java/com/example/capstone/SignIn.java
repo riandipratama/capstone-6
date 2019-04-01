@@ -11,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.capstone.DB.DatabaseHelper;
+import com.example.capstone.Util.SessionManager;
 
 public class SignIn extends AppCompatActivity {
 
@@ -18,6 +19,7 @@ public class SignIn extends AppCompatActivity {
     EditText email, pass;
     Button signin;
     DatabaseHelper helper;
+    SessionManager session;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +28,7 @@ public class SignIn extends AppCompatActivity {
         setContentView(R.layout.activity_sign_in);
 
         helper = new DatabaseHelper(SignIn.this);
+        session = new SessionManager(getApplicationContext());
         initReferences();
 
         Intent in = getIntent();
@@ -44,6 +47,7 @@ public class SignIn extends AppCompatActivity {
 
                     if(helper.isUserExists(Email)) {
                         if(helper.authenticateUser(Email,Pass)) {
+                            session.createLoginSession(Email);
                             Intent i = new Intent(SignIn.this,MainActivity.class);
                             i.putExtra("email",Email);
                             startActivity(i);
