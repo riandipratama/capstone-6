@@ -40,16 +40,23 @@
         android:text="Password :"
         android:textSize="26sp"
         android:layout_marginLeft="32dp"/>
-
-    <EditText
-        android:id="@+id/etPass"
+    
+    <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Isi Password Anda"
-        android:layout_marginLeft="32dp"
-        android:layout_marginRight="32dp"
-        android:layout_marginBottom="32dp"
-        android:inputType="textPassword"/>
+        app:passwordToggleEnabled="true">
+
+        <EditText
+            android:id="@+id/etPass"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Isi Password Anda"
+            android:layout_marginLeft="32dp"
+            android:layout_marginRight="32dp"
+            android:layout_marginBottom="32dp"
+            android:inputType="textPassword"/>
+
+    </android.support.design.widget.TextInputLayout>
 
     <Button
         android:id="@+id/btnLogin"
@@ -59,6 +66,7 @@
         android:layout_marginLeft="48dp"
         android:layout_marginRight="48dp"
         android:layout_marginBottom="8dp"
+        android:background="@drawable/yellow_button"
         android:text="LOGIN"/>
 
     <TextView

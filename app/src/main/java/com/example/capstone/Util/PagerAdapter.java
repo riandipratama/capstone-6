@@ -8,7 +8,7 @@ import com.example.capstone.register_cust;
 import com.example.capstone.register_vendor;
 
 public class PagerAdapter extends FragmentStatePagerAdapter {
-    int mNumOfTabs;
+    private int mNumOfTabs;
 
     public PagerAdapter(FragmentManager fm, int NumOfTabs) {
         super(fm);

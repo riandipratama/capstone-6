@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/colorPrimary"
     tools:context=".register_vendor">
 
@@ -19,7 +20,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="SIGNUP - VENDOR"
+                android:text="DAFTAR"
                 android:layout_margin="32dp"
                 android:layout_gravity="center"
                 android:textStyle="bold"
@@ -49,15 +50,22 @@
                 android:textSize="26sp"
                 android:layout_marginLeft="32dp"/>
 
-            <EditText
-                android:id="@+id/etPass"
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Isi Password Anda"
-                android:layout_marginLeft="32dp"
-                android:layout_marginRight="32dp"
-                android:layout_marginBottom="64dp"
-                android:inputType="textPassword"/>
+                app:passwordToggleEnabled="true">
+
+                <EditText
+                    android:id="@+id/etPass"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Isi Password Anda"
+                    android:layout_marginLeft="32dp"
+                    android:layout_marginRight="32dp"
+                    android:layout_marginBottom="64dp"
+                    android:inputType="textPassword"/>
+
+            </android.support.design.widget.TextInputLayout>
 
             <TextView
                 android:layout_width="match_parent"
@@ -66,15 +74,22 @@
                 android:textSize="26sp"
                 android:layout_marginLeft="32dp"/>
 
-            <EditText
-                android:id="@+id/etPassRepeat"
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Ulangi Password Anda"
-                android:layout_marginLeft="32dp"
-                android:layout_marginRight="32dp"
-                android:layout_marginBottom="64dp"
-                android:inputType="textPassword"/>
+                app:passwordToggleEnabled="true">
+
+                <EditText
+                    android:id="@+id/etPassRepeat"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Ulangi Password Anda"
+                    android:layout_marginLeft="32dp"
+                    android:layout_marginRight="32dp"
+                    android:layout_marginBottom="64dp"
+                    android:inputType="textPassword"/>
+
+            </android.support.design.widget.TextInputLayout>
 
             <TextView
                 android:layout_width="match_parent"
@@ -128,6 +143,22 @@
                 android:layout_marginBottom="64dp"
                 android:inputType="text"/>
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="32dp"
+                android:text="Foto Profil (opsional) :"
+                android:textSize="26sp" />
+
+            <ImageView
+                android:id="@+id/profilePreview"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:layout_gravity="center"
+                android:layout_marginVertical="16dp"
+                android:background="@drawable/imageview_border"
+                android:src="@drawable/default_cust" />
+
             <Button
                 android:id="@+id/btnSignup"
                 android:layout_width="match_parent"
@@ -136,6 +167,7 @@
                 android:layout_marginLeft="48dp"
                 android:layout_marginRight="48dp"
                 android:layout_marginBottom="8dp"
+                android:background="@drawable/yellow_button"
                 android:text="SIGNUP"/>
 
             <TextView

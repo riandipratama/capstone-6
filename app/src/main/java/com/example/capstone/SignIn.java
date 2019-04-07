@@ -46,14 +46,19 @@ public class SignIn extends AppCompatActivity {
                     String Pass = pass.getText().toString();
 
                     if(helper.isUserExists(Email)) {
-                        if(helper.authenticateUser(Email,Pass)) {
-                            session.createLoginSession(Email);
-                            Intent i = new Intent(SignIn.this,MainActivity.class);
-                            i.putExtra("email",Email);
-                            startActivity(i);
-                        } else {
-                            Toast.makeText(SignIn.this, "Email atau Password Salah", Toast.LENGTH_SHORT).show();
+                        String[] result;
+                        result = helper.authenticateUser(Email,Pass);
+
+                        if(result[0].equals("isCustomer")) {
+                            session.createLoginSession(result[1],Email);
+                            startActivity(new Intent(SignIn.this,MainActivity.class));
+                            finish();
+                        } else if(result[0].equals("isVendor")) {
+                            session.createLoginSession(result[1],Email);
+                            startActivity(new Intent(SignIn.this,DashboardActivity.class));
+                            finish();
                         }
+
                     } else {
                         Toast.makeText(SignIn.this, "Pengguna Tidak Terdaftar", Toast.LENGTH_SHORT).show();
                     }

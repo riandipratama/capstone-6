@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/navigation_dashboard"
+        android:title="Dashboard"
+        android:icon="@drawable/ic_home_black_24dp" />
+
+    <item
+        android:id="@+id/navigation_order"
+        android:title="Order"
+        android:icon="@drawable/ic_order" />
+
+    <item
+        android:id="@+id/navigation_account"
+        android:title="Account"
+        android:icon="@drawable/ic_account" />
+
+</menu>

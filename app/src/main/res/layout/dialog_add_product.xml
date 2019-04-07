@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginVertical="8dp"
+                android:text="Nama Produk :"
+                android:textSize="18sp" />
+
+            <EditText
+                android:id="@+id/namaProd"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:hint="Nama Produk"
+                android:inputType="text" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginVertical="8dp"
+                android:text="Kategori :"
+                android:textSize="18sp" />
+
+            <Spinner
+                android:id="@+id/spinKategori"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginVertical="8dp"
+                android:text="Kuantitas :"
+                android:textSize="18sp" />
+
+            <EditText
+                android:id="@+id/qtyProd"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:hint="Kuantitas Produk"
+                android:inputType="number" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginVertical="8dp"
+                android:text="Harga :"
+                android:textSize="18sp" />
+
+            <EditText
+                android:id="@+id/hargaProd"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:hint="Harga Produk"
+                android:inputType="number" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginVertical="8dp"
+                android:text="Deskripsi Produk :"
+                android:textSize="18sp" />
+
+            <EditText
+                android:id="@+id/descProd"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:ems="10"
+                android:gravity="top|left"
+                android:hint="Deskripsi Produk"
+                android:inputType="textMultiLine"
+                android:lines="4" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginVertical="8dp"
+                    android:text="Foto Produk (Max. 5):"
+                    android:textSize="18sp" />
+
+                <Button
+                    android:id="@+id/btnPilihFoto"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginVertical="8dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/yellow_button"
+                    android:text="Pilih Foto" />
+
+            </LinearLayout>
+
+
+
+            <HorizontalScrollView
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_marginHorizontal="16dp"
+                android:scrollbars="horizontal">
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/prodPrev1"
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"
+                        android:layout_marginHorizontal="16dp"
+                        android:scaleType="fitXY" />
+
+                    <ImageView
+                        android:id="@+id/prodPrev2"
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"
+                        android:layout_marginHorizontal="16dp"
+                        android:scaleType="fitXY" />
+
+                    <ImageView
+                        android:id="@+id/prodPrev3"
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"
+                        android:layout_marginHorizontal="16dp"
+                        android:scaleType="fitXY" />
+
+                    <ImageView
+                        android:id="@+id/prodPrev4"
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"
+                        android:layout_marginHorizontal="16dp"
+                        android:scaleType="fitXY" />
+
+                    <ImageView
+                        android:id="@+id/prodPrev5"
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"
+                        android:layout_marginHorizontal="16dp"
+                        android:scaleType="fitXY" />
+
+                </LinearLayout>
+
+            </HorizontalScrollView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btnCancelAdd"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginVertical="8dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/yellow_button"
+                    android:text="Batal" />
+
+                <Button
+                    android:id="@+id/btnAddProd"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginVertical="8dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/yellow_button"
+                    android:text="Tambah" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

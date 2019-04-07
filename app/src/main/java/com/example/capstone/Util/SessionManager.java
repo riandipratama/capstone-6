@@ -10,22 +10,23 @@ import java.util.HashMap;
 
 public class SessionManager {
 
-    SharedPreferences pref;
-    SharedPreferences.Editor prefEdit;
-    Context context;
-    int PRIVATE_MODE = 0;
+    private SharedPreferences pref;
+    private SharedPreferences.Editor prefEdit;
+    private Context context;
     private static final String PREF_NAME = "RencaraPref";
-    public static final String LOGGED_IN = "isLoggedIn";
+    private static final String LOGGED_IN = "isLoggedIn";
     public static final String KEY_EMAIL = "loggedEmail";
+    public static final String KEY_ID = "loggedUserID";
 
     public SessionManager(Context context) {
         this.context = context;
-        pref = context.getSharedPreferences(PREF_NAME,PRIVATE_MODE);
+        pref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         prefEdit = pref.edit();
     }
 
-    public void createLoginSession (String email) {
+    public void createLoginSession (String id, String email) {
         prefEdit.putBoolean(LOGGED_IN, true);
+        prefEdit.putString(KEY_ID, id);
         prefEdit.putString(KEY_EMAIL, email);
 
         prefEdit.commit();
@@ -44,8 +45,9 @@ public class SessionManager {
     }
 
     public HashMap<String, String> getUserDetails(){
-        HashMap<String, String> user = new HashMap<String, String>();
+        HashMap<String, String> user = new HashMap<>();
 
+        user.put(KEY_ID, pref.getString(KEY_ID,null));
         user.put(KEY_EMAIL, pref.getString(KEY_EMAIL, null));
 
         return user;

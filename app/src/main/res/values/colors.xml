@@ -3,4 +3,8 @@
     <color name="colorPrimary">#FFFF</color>
     <color name="colorPrimaryDark">#808080</color>
     <color name="colorAccent">#D81B60</color>
+    <color name="yellowButton1S">#FED136</color>
+    <color name="yellowButton1E">#f4c41f</color>
+    <color name="yellowButton2S">#ddb62f</color>
+    <color name="yellowButton2E">#dbae16</color>
 </resources>

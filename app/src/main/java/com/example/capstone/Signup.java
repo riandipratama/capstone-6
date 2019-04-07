@@ -7,7 +7,7 @@ import android.os.Bundle;
 
 import com.example.capstone.Util.PagerAdapter;
 
-public class Signup extends AppCompatActivity {
+ class Signup extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +37,7 @@ public class Signup extends AppCompatActivity {
         tabLayout.addOnTabSelectedListener(
                 new TabLayout.OnTabSelectedListener() {
                     @Override
-                    public void onTabSelected(TabLayout.Tab tab) {
+                     public void onTabSelected(TabLayout.Tab tab) {
                         viewPager.setCurrentItem(tab.getPosition());
                     }
 

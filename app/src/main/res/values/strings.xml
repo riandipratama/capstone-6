@@ -1,10 +1,25 @@
 <resources>
-    <string name="app_name">CAPSTONE</string>
+    <string name="app_name">RENCARA</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="tab_label1">CUSTOMER</string>
     <string name="tab_label2">VENDOR</string>
     <string name="title_activity_account">Account</string>
     <string name="search_hint">cari produk</string>
+    <string name="title_activity_dashboard">DashboardActivity</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="telusuri_kategori">Telusuri Kategori</string>
+    <string name="user_fullname">%1$s %2$s</string>
+    <string name="ubah_password">Ubah Password</string>
+    <string name="pengaturan_akun">Pengaturan Akun</string>
+    <string name="simpan">Simpan</string>
+
+    <string-array name="spinDashboard">
+        <item>Kategori</item>
+        <item>Terjual</item>
+    </string-array>
+    <string name="title_activity_cat_details">CatDetails</string>
+    <string name="lokasi_produk_detail">%1$s, %2$s</string>
 </resources>

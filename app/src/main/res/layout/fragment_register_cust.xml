@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/colorPrimary"
     tools:context=".register_cust">
 
@@ -20,176 +21,207 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="SIGNUP - PELANGGAN"
-                android:layout_margin="32dp"
                 android:layout_gravity="center"
-                android:textStyle="bold"
-                android:textSize="30sp"/>
+                android:layout_margin="32dp"
+                android:text="DAFTAR"
+                android:textSize="30sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="32dp"
                 android:text="Email :"
-                android:textSize="26sp"
-                android:layout_marginLeft="32dp"/>
+                android:textSize="26sp" />
 
             <EditText
                 android:id="@+id/etEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="32dp"
+                android:layout_marginRight="32dp"
+                android:layout_marginBottom="64dp"
                 android:hint="Isi Email Anda"
-                android:layout_marginLeft="32dp"
-                android:layout_marginRight="32dp"
-                android:layout_marginBottom="64dp"
-                android:inputType="textEmailAddress"/>
+                android:inputType="textEmailAddress" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="32dp"
                 android:text="Password :"
-                android:textSize="26sp"
-                android:layout_marginLeft="32dp"/>
+                android:textSize="26sp" />
 
-            <EditText
-                android:id="@+id/etPass"
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Isi Password Anda"
-                android:layout_marginLeft="32dp"
-                android:layout_marginRight="32dp"
-                android:layout_marginBottom="64dp"
-                android:inputType="textPassword"/>
+                app:passwordToggleEnabled="true">
+
+                <EditText
+                    android:id="@+id/etPass"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="32dp"
+                    android:layout_marginRight="32dp"
+                    android:layout_marginBottom="64dp"
+                    android:hint="Isi Password Anda"
+                    android:inputType="textPassword" />
+
+            </android.support.design.widget.TextInputLayout>
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="32dp"
                 android:text="Ulangi Password :"
-                android:textSize="26sp"
-                android:layout_marginLeft="32dp"/>
+                android:textSize="26sp" />
 
-            <EditText
-                android:id="@+id/etPassRepeat"
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Ulangi Password Anda"
-                android:layout_marginLeft="32dp"
-                android:layout_marginRight="32dp"
-                android:layout_marginBottom="64dp"
-                android:inputType="textPassword"/>
+                app:passwordToggleEnabled="true">
+
+                <EditText
+                    android:id="@+id/etPassRepeat"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="32dp"
+                    android:layout_marginRight="32dp"
+                    android:layout_marginBottom="64dp"
+                    android:hint="Ulangi Password Anda"
+                    android:inputType="textPassword" />
+
+            </android.support.design.widget.TextInputLayout>
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="32dp"
                 android:text="Nama Depan :"
-                android:textSize="26sp"
-                android:layout_marginLeft="32dp"/>
+                android:textSize="26sp" />
 
             <EditText
                 android:id="@+id/etFName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Nama Depan Anda"
                 android:layout_marginLeft="32dp"
                 android:layout_marginRight="32dp"
                 android:layout_marginBottom="64dp"
-                android:inputType="text"/>
+                android:hint="Nama Depan Anda"
+                android:inputType="text" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="32dp"
                 android:text="Nama Belakang :"
-                android:textSize="26sp"
-                android:layout_marginLeft="32dp"/>
+                android:textSize="26sp" />
 
             <EditText
                 android:id="@+id/etLName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Isi Noama Belakang Anda"
                 android:layout_marginLeft="32dp"
                 android:layout_marginRight="32dp"
                 android:layout_marginBottom="64dp"
-                android:inputType="text"/>
+                android:hint="Isi Noama Belakang Anda"
+                android:inputType="text" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="32dp"
                 android:text="Alamat :"
-                android:textSize="26sp"
-                android:layout_marginLeft="32dp"/>
+                android:textSize="26sp" />
 
             <EditText
                 android:id="@+id/etAddress"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Isi Alamat Anda"
                 android:layout_marginLeft="32dp"
                 android:layout_marginRight="32dp"
                 android:layout_marginBottom="64dp"
-                android:inputType="textMultiLine"
-                android:ems="10"/>
+                android:ems="10"
+                android:hint="Isi Alamat Anda"
+                android:inputType="textMultiLine" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="32dp"
                 android:text="Kota :"
-                android:textSize="26sp"
-                android:layout_marginLeft="32dp"/>
+                android:textSize="26sp" />
 
             <EditText
                 android:id="@+id/etCity"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Isi Kota Anda"
                 android:layout_marginLeft="32dp"
                 android:layout_marginRight="32dp"
                 android:layout_marginBottom="64dp"
-                android:inputType="text"/>
+                android:hint="Isi Kota Anda"
+                android:inputType="text" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="32dp"
                 android:text="No. Telepon :"
-                android:textSize="26sp"
-                android:layout_marginLeft="32dp"/>
+                android:textSize="26sp" />
 
             <EditText
                 android:id="@+id/etPhone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Isi No. Telepon Anda"
                 android:layout_marginLeft="32dp"
                 android:layout_marginRight="32dp"
                 android:layout_marginBottom="64dp"
-                android:inputType="phone"/>
+                android:hint="Isi No. Telepon Anda"
+                android:inputType="phone" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="32dp"
+                android:text="Foto Profil (opsional) :"
+                android:textSize="26sp" />
+
+            <ImageView
+                android:id="@+id/profilePreview"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:layout_gravity="center"
+                android:layout_marginVertical="16dp"
+                android:background="@drawable/imageview_border"
+                android:src="@drawable/default_cust" />
 
             <Button
                 android:id="@+id/btnSignup"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
                 android:layout_marginLeft="48dp"
+                android:layout_marginTop="24dp"
                 android:layout_marginRight="48dp"
                 android:layout_marginBottom="8dp"
-                android:text="SIGNUP"/>
+                android:background="@drawable/yellow_button"
+                android:text="SIGNUP" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Sudah punya akun?"
-                android:textSize="26sp"
-                android:textAlignment="center"/>
+                android:textAlignment="center"
+                android:textSize="26sp" />
 
             <TextView
                 android:id="@+id/signin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Masuk Sekarang!"
                 android:layout_marginBottom="32dp"
+                android:text="Masuk Sekarang!"
+                android:textAlignment="center"
                 android:textColor="@android:color/holo_blue_dark"
-                android:textStyle="italic"
                 android:textSize="26sp"
-                android:textAlignment="center"/>
+                android:textStyle="italic" />
 
         </LinearLayout>
 

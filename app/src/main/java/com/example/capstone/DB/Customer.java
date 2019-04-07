@@ -2,7 +2,7 @@ package com.example.capstone.DB;
 
 public class Customer {
 
-    private int id;
+    private String id;
     private String email;
     private String pass;
     private String fname;
@@ -10,6 +10,31 @@ public class Customer {
     private String address;
     private String city;
     private String phone;
+    private String image;
+
+    public Customer() {
+
+    }
+
+    public Customer(String id, String email, String fname, String lname, String address, String city, String phone, String image) {
+        this.id = id;
+        this.email = email;
+        this.fname = fname;
+        this.lname = lname;
+        this.address = address;
+        this.city = city;
+        this.phone = phone;
+        this.image = image;
+    }
+
+    public Customer(String email, String fname, String lname, String address, String city, String phone) {
+        this.email = email;
+        this.fname = fname;
+        this.lname = lname;
+        this.address = address;
+        this.city = city;
+        this.phone = phone;
+    }
 
     //Setter methods
 
@@ -41,7 +66,16 @@ public class Customer {
         this.phone = phone;
     }
 
+    public void setImage(String image) {
+        this.image = image;
+    }
+
     //getter methods
+
+
+    public String getId() {
+        return id;
+    }
 
     public String getEmail() {
         return email;
@@ -71,4 +105,7 @@ public class Customer {
         return phone;
     }
 
+    public String getImage() {
+        return image;
+    }
 }
