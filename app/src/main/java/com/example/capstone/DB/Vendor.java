@@ -8,44 +8,30 @@ public class Vendor {
     private String name;
     private String address;
     private String city;
+    private String phone;
     private String image;
 
     public Vendor(){
 
     }
 
-    public Vendor(String id, String email, String name, String address, String city, String image){
+    public Vendor(String id, String email, String name, String address, String city, String phone, String image){
         this.id = id;
         this.email = email;
         this.name = name;
         this.address = address;
         this.city = city;
+        this.phone = phone;
         this.image = image;
     }
 
-    //Setter methods
-
-    public void setEmail(String email) {
+    public Vendor(String email, String pass, String name, String address, String city, String phone, String image, String just_null){
         this.email = email;
-    }
-
-    public void setPass(String pass) {
         this.pass = pass;
-    }
-
-    public void setName(String name) {
         this.name = name;
-    }
-
-    public void setAddress(String address) {
         this.address = address;
-    }
-
-    public void setCity(String city) {
         this.city = city;
-    }
-
-    public void setImage(String image) {
+        this.phone = phone;
         this.image = image;
     }
 
@@ -74,6 +60,10 @@ public class Vendor {
 
     public String getCity() {
         return city;
+    }
+
+    public String getPhone() {
+        return phone;
     }
 
     public String getImage() {

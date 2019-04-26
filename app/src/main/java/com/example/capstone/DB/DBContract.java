@@ -15,6 +15,7 @@ import android.provider.BaseColumns;
          static final String COL_NAME = "vendor_name";
          static final String COL_ADDRESS = "address2";
          static final String COL_CITY = "city2";
+         static final String COL_PHONE = "phone2";
          static final String COL_EMAIL = "email";
          static final String COL_PASS = "password";
          static final String COL_IMAGE = "image";
@@ -25,6 +26,7 @@ import android.provider.BaseColumns;
                 COL_NAME + " TEXT, " +
                 COL_ADDRESS + " TEXT, " +
                 COL_CITY + " TEXT, " +
+                COL_PHONE + " TEXT," +
                 COL_EMAIL + " TEXT, " +
                 COL_PASS + " TEXT, " +
                 COL_IMAGE + " TEXT " + ")";
@@ -120,17 +122,21 @@ import android.provider.BaseColumns;
          static final String TABLE_NAME = "orders";
          static final String COL_ID = "order_id";
          static final String COL_CUST_ID = "customer_id";
-         static final String COL_DATE = "order_date";
+         static final String COL_CART_ID = "cart_id";
          static final String COL_TOTAL = "total_price";
+         static final String COL_ORDER_MADE_DATE = "created_at";
 
          static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS " +
                 TABLE_NAME + " (" +
                 COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 COL_CUST_ID + " INTEGER, " +
-                COL_DATE + " INTEGER, " +
+                COL_CART_ID + " INTEGER, " +
                 COL_TOTAL + " INTEGER, " +
-                "FOREIGN KEY(" + COL_CUST_ID + ") REFERENCES " +
-                Customer.TABLE_NAME + "(" + Customer.COL_ID + " ) " + " )";
+                COL_ORDER_MADE_DATE + " TEXT, " +
+                 "FOREIGN KEY(" + COL_CUST_ID + ") REFERENCES " +
+                 Customer.TABLE_NAME + "(" + Customer.COL_ID + " ) ON DELETE CASCADE, " +
+                "FOREIGN KEY(" + COL_CART_ID + ") REFERENCES " +
+                Cart.TABLE_NAME + "(" + Cart.COL_ID + " ) ON DELETE CASCADE " + " )";
     }
 
      static class Payment implements BaseColumns {
@@ -146,8 +152,8 @@ import android.provider.BaseColumns;
                 COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 COL_ORDER_ID + " INTEGER, " +
                 COL_PAY_TYPE + " TEXT, " +
-                COL_DATE + " INTEGER, " +
-                COL_STATUS + " BOOLEAN, " +
+                COL_DATE + " TEXT, " +
+                COL_STATUS + " INTEGER, " +
                 "FOREIGN KEY(" + COL_ORDER_ID + ") REFERENCES " +
                 Orders.TABLE_NAME + "(" + Orders.COL_ID + " ) " + " )";
     }
@@ -175,24 +181,43 @@ import android.provider.BaseColumns;
                 Customer.TABLE_NAME + "(" + Customer.COL_ID + " ) " + " )";
     }
 
-     static class OrderList implements BaseColumns {
-         static final String TABLE_NAME = "order_list";
-         static final String COL_ORDER_ID = "order_id";
-         static final String COL_PROD_ID = "product_id";
-         static final String COL_QTY = "quantity";
-         static final String COL_TOTAL = "total";
+    static class Cart implements BaseColumns {
+        static final String TABLE_NAME = "cart";
+        static final String COL_ID = "cart_id";
+        static final String COL_CUST_ID = "customer_id";
 
-         static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS " +
+        static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS " +
                 TABLE_NAME + " (" +
-                COL_ORDER_ID + " INTEGER NOT NULL, " +
-                COL_PROD_ID + " INTEGER NOT NULL, " +
-                COL_QTY + " INTEGER, " +
-                COL_TOTAL + " INTEGER, " +
-                "PRIMARY KEY ( " + COL_ORDER_ID + " , " + COL_PROD_ID + " ), " +
+                COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                COL_CUST_ID + " INTEGER, " +
+                "FOREIGN KEY(" + COL_CUST_ID + ") REFERENCES " +
+                Customer.TABLE_NAME + "(" + Customer.COL_ID + " ) " + " )";
+
+    }
+
+    static class CartList implements BaseColumns {
+        static final String TABLE_NAME = "cartlist";
+        static final String COL_CART_ID = "cart_id";
+        static final String COL_ORDER_ID = "order_id";
+        static final String COL_PROD_ID = "product_id";
+        static final String COL_QTY = "item_qty";
+        static final String COL_TOTAL = "total";
+        static final String COL_ORDER_DATE = "date";
+
+        static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS " +
+                TABLE_NAME + " (" +
+                COL_CART_ID + " INTEGER, " +
+                COL_ORDER_ID + " INTEGER, " +
+                COL_PROD_ID + " INTEGER, " +
+                COL_QTY + " TEXT, " +
+                COL_TOTAL + " TEXT, " +
+                COL_ORDER_DATE + " TEXT, " +
                 "FOREIGN KEY(" + COL_PROD_ID + ") REFERENCES " +
                 Product.TABLE_NAME + "(" + Product.COL_ID + " ), " +
                 "FOREIGN KEY(" + COL_ORDER_ID + ") REFERENCES " +
-                Orders.TABLE_NAME + "(" + Orders.COL_ID + " ) " + " )";
+                Orders.TABLE_NAME + "(" + Orders.COL_ID + " ) ON DELETE CASCADE, " +
+                "FOREIGN KEY(" + COL_CART_ID + ") REFERENCES " +
+                Cart.TABLE_NAME + "(" + Cart.COL_ID + " ) ON DELETE CASCADE" + " )";
     }
 
 }

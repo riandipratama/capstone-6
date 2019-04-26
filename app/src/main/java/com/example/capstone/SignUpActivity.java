@@ -7,7 +7,7 @@ import android.os.Bundle;
 
 import com.example.capstone.Util.PagerAdapter;
 
- class Signup extends AppCompatActivity {
+ public class SignUpActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

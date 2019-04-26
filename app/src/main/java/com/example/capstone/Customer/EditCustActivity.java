@@ -1,4 +1,4 @@
-package com.example.capstone;
+package com.example.capstone.Customer;
 
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
@@ -14,11 +14,12 @@ import android.widget.Toast;
 
 import com.example.capstone.DB.Customer;
 import com.example.capstone.DB.DatabaseHelper;
+import com.example.capstone.R;
 import com.example.capstone.Util.SessionManager;
 
 import java.util.HashMap;
 
-public class EditCust extends AppCompatActivity implements View.OnClickListener {
+public class EditCustActivity extends AppCompatActivity implements View.OnClickListener {
 
     TextView changePass,editProfile;
     TextInputLayout oldPass, newPass, reNewPass;
@@ -261,7 +262,7 @@ public class EditCust extends AppCompatActivity implements View.OnClickListener 
                     city.getText().toString(),
                     phone.getText().toString());
             if(helper.updateCustProfile(cust,user.get("KEY_ID"))) {
-                session.createLoginSession(user.get("KEY_ID"),email.getText().toString());
+                session.createLoginSession(user.get("KEY_ID"),email.getText().toString(),1);
                 Snackbar.make(view,"Profil berhasil diupdate",Snackbar.LENGTH_SHORT).show();
                 editProfile.performClick();
             } else {

@@ -1,6 +1,9 @@
 package com.example.capstone;
 
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Patterns;
@@ -10,10 +13,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.capstone.Customer.MainActivity;
 import com.example.capstone.DB.DatabaseHelper;
 import com.example.capstone.Util.SessionManager;
+import com.example.capstone.Vendor.DashboardActivity;
 
-public class SignIn extends AppCompatActivity {
+public class SignInActivity extends AppCompatActivity {
 
     TextView signup;
     EditText email, pass;
@@ -27,8 +32,17 @@ public class SignIn extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
 
-        helper = new DatabaseHelper(SignIn.this);
+        helper = new DatabaseHelper(SignInActivity.this);
         session = new SessionManager(getApplicationContext());
+
+        if(session.isLoggedIn(1)) {
+            startActivity(new Intent(getApplicationContext(),MainActivity.class));
+            finish();
+        } else if (session.isLoggedIn(2)) {
+            startActivity(new Intent(getApplicationContext(),DashboardActivity.class));
+            finish();
+        }
+
         initReferences();
 
         Intent in = getIntent();
@@ -50,17 +64,17 @@ public class SignIn extends AppCompatActivity {
                         result = helper.authenticateUser(Email,Pass);
 
                         if(result[0].equals("isCustomer")) {
-                            session.createLoginSession(result[1],Email);
-                            startActivity(new Intent(SignIn.this,MainActivity.class));
+                            session.createLoginSession(result[1],Email,1);
+                            startActivity(new Intent(SignInActivity.this, MainActivity.class));
                             finish();
                         } else if(result[0].equals("isVendor")) {
-                            session.createLoginSession(result[1],Email);
-                            startActivity(new Intent(SignIn.this,DashboardActivity.class));
+                            session.createLoginSession(result[1],Email,2);
+                            startActivity(new Intent(SignInActivity.this, DashboardActivity.class));
                             finish();
                         }
 
                     } else {
-                        Toast.makeText(SignIn.this, "Pengguna Tidak Terdaftar", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(SignInActivity.this, "Pengguna Tidak Terdaftar", Toast.LENGTH_SHORT).show();
                     }
 
                 }
@@ -70,7 +84,7 @@ public class SignIn extends AppCompatActivity {
         signup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(SignIn.this,Signup.class);
+                Intent i = new Intent(SignInActivity.this, SignUpActivity.class);
                 startActivity(i);
             }
         });

@@ -20,6 +20,26 @@
         <item>Kategori</item>
         <item>Terjual</item>
     </string-array>
+
+    <string-array name="spinPayMethod">
+        <item>COD</item>
+        <item>Transfer</item>
+        <item>Credit Card</item>
+        <item>Hutang</item>
+    </string-array>
+
     <string name="title_activity_cat_details">CatDetails</string>
     <string name="lokasi_produk_detail">%1$s, %2$s</string>
+    <string name="terjual_list_dashboard">Terjual : %1$s</string>
+    <string name="harga_produk_dashboard">Harga : Rp%1$s </string>
+    <string name="qty_produk_dashboard">Qty : %1$s</string>
+    <string name="rp_symbol">Rp%1$s</string>
+    <string name="book_for">Book For : %1$s</string>
+    <string name="order_id_payment">Order ID : %1$s</string>
+    <string name="payment_id_payment">Payment ID : %1$s</string>
+    <string name="pay_method_payment">Payment Method : %1$s</string>
+    <string name="total_payment">Total : Rp%1$s</string>
+    <string name="payment_date">Payment Date : %1$s</string>
+    <string name="custname_order">Cust. : %1$s %2$s</string>
+    <string name="cust_city">City : %1$s</string>
 </resources>

@@ -5,21 +5,15 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 
-import com.example.capstone.R;
-
-import java.io.File;
-import java.io.FileOutputStream;
+import java.sql.SQLInput;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 1;
-    public static final String DATABASE_NAME = "rencara_database";
+    private static final String DATABASE_NAME = "rencara_database";
 
     public DatabaseHelper (Context context){
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -31,7 +25,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(DBContract.Category.CREATE_TABLE);
         db.execSQL(DBContract.Orders.CREATE_TABLE);
         db.execSQL(DBContract.Payment.CREATE_TABLE);
-        db.execSQL(DBContract.OrderList.CREATE_TABLE);
+        db.execSQL(DBContract.Cart.CREATE_TABLE);
+        db.execSQL(DBContract.CartList.CREATE_TABLE);
         db.execSQL(DBContract.ProdReview.CREATE_TABLE);
         db.execSQL(DBContract.Product.CREATE_TABLE);
         db.execSQL(DBContract.ProductImages.CREATE_TABLE);
@@ -48,13 +43,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             db.execSQL("DROP TABLE IF EXISTS " + DBContract.Category.TABLE_NAME);
             db.execSQL("DROP TABLE IF EXISTS " + DBContract.Orders.TABLE_NAME);
             db.execSQL("DROP TABLE IF EXISTS " + DBContract.Payment.TABLE_NAME);
-            db.execSQL("DROP TABLE IF EXISTS " + DBContract.OrderList.TABLE_NAME);
+            db.execSQL("DROP TABLE IF EXISTS " + DBContract.Cart.TABLE_NAME);
+            db.execSQL("DROP TABLE IF EXISTS " + DBContract.CartList.TABLE_NAME);
             db.execSQL("DROP TABLE IF EXISTS " + DBContract.Product.TABLE_NAME);
             db.execSQL("DROP TABLE IF EXISTS " + DBContract.ProductImages.TABLE_NAME);
             db.execSQL(DBContract.Category.POPULATE_CATEGORY);
         }
         onCreate(db);
     }
+
+    // Add Operations Start Here
 
     public void addCust(Customer cust) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -82,6 +80,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(DBContract.Vendor.COL_NAME,vendor.getName());
         values.put(DBContract.Vendor.COL_ADDRESS,vendor.getAddress());
         values.put(DBContract.Vendor.COL_CITY,vendor.getCity());
+        values.put(DBContract.Vendor.COL_PHONE,vendor.getPhone());
         values.put(DBContract.Vendor.COL_IMAGE,vendor.getImage());
 
         db.insert(DBContract.Vendor.TABLE_NAME,null,values);
@@ -102,21 +101,107 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return db.insert(DBContract.Product.TABLE_NAME,null,values);
     }
 
-    public void addProductImages(ProductImages prodImg,List<String> imgpath) {
+    public void addProductImages(ProductImages prodImg,String imgpath) {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.beginTransaction();
-        try {
             ContentValues values = new ContentValues();
-            for (int i = 0; i<imgpath.size(); i++) {
                 values.put(DBContract.ProductImages.COL_ID,prodImg.getId());
-                values.put(DBContract.ProductImages.COL_IMAGE,imgpath.get(i));
+                values.put(DBContract.ProductImages.COL_IMAGE,imgpath);
                 db.insert(DBContract.ProductImages.TABLE_NAME,null, values);
-            }
-            db.setTransactionSuccessful();
-        } finally {
-            db.endTransaction();
-        }
+
         db.close();
+    }
+
+    public long addCart(Cart cart) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(DBContract.Cart.COL_CUST_ID, cart.getCust_id());
+
+        return db.insert(DBContract.Cart.TABLE_NAME, null, values);
+    }
+
+    public boolean addCartList(CartList cl) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(DBContract.CartList.COL_CART_ID, cl.getCart_id());
+        values.put(DBContract.CartList.COL_PROD_ID, cl.getProd_id());
+        values.put(DBContract.CartList.COL_ORDER_ID,cl.getOrder_id());
+        values.put(DBContract.CartList.COL_QTY, cl.getQty());
+        values.put(DBContract.CartList.COL_TOTAL, cl.getTotal());
+        values.put(DBContract.CartList.COL_ORDER_DATE, cl.getOrder_date());
+
+        if(db.insert(DBContract.CartList.TABLE_NAME, null, values) > 0) {
+            db.close();
+            return  true;
+        } else {
+            db.close();
+            return  false;
+        }
+    }
+
+    public String addOrder(Order order) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        String insertQuery = "INSERT INTO " +
+                DBContract.Orders.TABLE_NAME + "(" +
+                DBContract.Orders.COL_CART_ID + "," + DBContract.Orders.COL_CUST_ID + "," + DBContract.Orders.COL_TOTAL + "," + DBContract.Orders.COL_ORDER_MADE_DATE + ") " +
+                " VALUES (?,?,?,datetime('now','localtime'))";
+
+        String[] values = new String[]{order.getCart_id(),order.getCust_id(),order.getTotal_price()};
+        db.execSQL(insertQuery,values);
+
+        Cursor res = db.rawQuery("SELECT last_insert_rowid() AS orderid FROM " + DBContract.Orders.TABLE_NAME,null);
+
+        if(res != null && res.moveToFirst()) {
+            String  order_id = res.getString(res.getColumnIndex("orderid"));
+
+            res.close();
+
+            return order_id;
+        }
+
+        res.close();
+        return null;
+    }
+
+    public String addPayment(Payment pay) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        String insertQuery = "INSERT INTO " +
+                DBContract.Payment.TABLE_NAME + "(" +
+                DBContract.Payment.COL_ORDER_ID + "," + DBContract.Payment.COL_PAY_TYPE + "," + DBContract.Payment.COL_DATE + "," + DBContract.Payment.COL_STATUS + ") " +
+                " VALUES (?,?,datetime('now','localtime'),?)";
+
+        String[] values = new String[]{pay.getOrder_id(),pay.getType(),pay.getStatus()};
+        db.execSQL(insertQuery,values);
+
+        Cursor res = db.rawQuery("SELECT last_insert_rowid() AS payid FROM " + DBContract.Payment.TABLE_NAME,null);
+
+        if(res != null && res.moveToFirst()) {
+            String pay_id = res.getString(res.getColumnIndex("payid"));
+
+            res.close();
+
+            return pay_id;
+        }
+
+        res.close();
+
+        return null;
+
+    }
+
+    public boolean addReview(Review rev) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(DBContract.ProdReview.COL_PROD_ID,rev.getProd_id());
+        values.put(DBContract.ProdReview.COL_CUST_ID,rev.getCust_id());
+        values.put(DBContract.ProdReview.COL_PAY_ID,rev.getPay_id());
+        values.put(DBContract.ProdReview.COL_COMMENT,rev.getComment());
+
+        return db.insert(DBContract.ProdReview.TABLE_NAME, null, values) > 0;
     }
 
     public boolean isUserExists(String email) {
@@ -162,9 +247,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             secondCursor.close();
             db.close();
 
-            if(cursorSecondCount > 0) {
-                return true;
-            }
+            return cursorSecondCount > 0;
         }
 
         return false;
@@ -206,9 +289,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     null,
                     null);
 
-            db.close();
-
             if(secondCursor != null && secondCursor.moveToFirst()) {
+                db.close();
                 return new String[]{"isVendor",secondCursor.getString(secondCursor.getColumnIndex(DBContract.Vendor.COL_ID))};
             }
         }
@@ -419,8 +501,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             String name = vendorCursor.getString(vendorCursor.getColumnIndex(DBContract.Vendor.COL_NAME));
             String address = vendorCursor.getString(vendorCursor.getColumnIndex(DBContract.Vendor.COL_ADDRESS));
             String city = vendorCursor.getString(vendorCursor.getColumnIndex(DBContract.Vendor.COL_CITY));
+            String phone = vendorCursor.getString(vendorCursor.getColumnIndex(DBContract.Vendor.COL_PHONE));
             String image = vendorCursor.getString(vendorCursor.getColumnIndex(DBContract.Vendor.COL_IMAGE));
-            Vendor vendor = new Vendor(id,emailUser,name,address,city,image);
+            Vendor vendor = new Vendor(id,emailUser,name,address,city,phone,image,null);
 
             vendorCursor.close();
             db.close();
@@ -439,7 +522,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Cursor cursor = db.query(
                 DBContract.Vendor.TABLE_NAME,
                 null,
-                DBContract.Vendor.COL_ID + " + ?",
+                DBContract.Vendor.COL_ID + " = ?",
                 new String[]{vendor_id},
                 null,
                 null,
@@ -454,13 +537,310 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         cursor.getString(cursor.getColumnIndex(DBContract.Vendor.COL_NAME)),
                         cursor.getString(cursor.getColumnIndex(DBContract.Vendor.COL_ADDRESS)),
                         cursor.getString(cursor.getColumnIndex(DBContract.Vendor.COL_CITY)),
-                        cursor.getString(cursor.getColumnIndex(DBContract.Vendor.COL_IMAGE))
+                        cursor.getString(cursor.getColumnIndex(DBContract.Vendor.COL_PHONE)),
+                        cursor.getString(cursor.getColumnIndex(DBContract.Vendor.COL_IMAGE)),
+                        null
 
                 );
                 vendorlist.add(vendor);
             }
         }
         return vendorlist;
+    }
+
+    public Cart getCart(String cust_id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cart cart = new Cart();
+
+        Cursor cursor = db.query(
+                DBContract.Cart.TABLE_NAME,
+                null,
+                DBContract.Cart.COL_CUST_ID + " = ?",
+                new String[] {cust_id},
+                null,
+                null,
+                null
+        );
+
+        if(cursor != null && cursor.moveToLast()) {
+            cart = new Cart(
+                    cursor.getString(cursor.getColumnIndex(DBContract.Cart.COL_ID)),
+                    cursor.getString(cursor.getColumnIndex(DBContract.Cart.COL_CUST_ID))
+            );
+
+            cursor.close();
+            db.close();
+
+            return cart;
+        }
+
+        cursor.close();
+        db.close();
+
+        return cart;
+    }
+
+    public CartList getCartList(String prod_id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        CartList cl = new CartList();
+
+        Cursor cursor = db.query(
+                DBContract.CartList.TABLE_NAME,
+                null,
+                DBContract.CartList.COL_PROD_ID + " = ?",
+                new String[]{prod_id},
+                null,
+                null,
+                null
+        );
+
+        if(cursor != null && cursor.moveToFirst()) {
+            cl = new CartList(
+                    cursor.getString(cursor.getColumnIndex(DBContract.CartList.COL_CART_ID)),
+                    cursor.getString(cursor.getColumnIndex(DBContract.CartList.COL_ORDER_ID)),
+                    cursor.getString(cursor.getColumnIndex(DBContract.CartList.COL_PROD_ID)),
+                    cursor.getString(cursor.getColumnIndex(DBContract.CartList.COL_QTY)),
+                    cursor.getString(cursor.getColumnIndex(DBContract.CartList.COL_TOTAL)),
+                    cursor.getString(cursor.getColumnIndex(DBContract.CartList.COL_ORDER_DATE))
+            );
+            cursor.close();
+            db.close();
+            return cl;
+        }
+        cursor.close();
+        db.close();
+        return cl;
+    }
+
+    public List<Cart> getAllParticularCarts(String cust_id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        List<Cart> cList = new ArrayList<>();
+
+        Cursor cursor = db.query(
+                DBContract.Cart.TABLE_NAME,
+                null,
+                DBContract.Cart.COL_CUST_ID + "= ?",
+                new String[]{cust_id},
+                null,
+                null,
+                null
+        );
+
+        if(cursor != null) {
+            while(cursor.moveToNext()) {
+                Cart cart = new Cart(
+                        cursor.getString(cursor.getColumnIndex(DBContract.Cart.COL_ID)),
+                        cursor.getString(cursor.getColumnIndex(DBContract.Cart.COL_CUST_ID))
+                );
+                cList.add(cart);
+            }
+        }
+        cursor.close();
+        db.close();
+
+        return cList;
+    }
+
+    public List<CartList> getAllParticularCartList(String id, int type) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        List<CartList> cList = new ArrayList<>();
+        String selection = null;
+
+        switch(type) {
+            case 1 :
+                selection = DBContract.CartList.COL_CART_ID + " = ?";
+                break;
+            case 2 :
+                selection = DBContract.CartList.COL_ORDER_ID + " = ?";
+                break;
+            case 3:
+                selection = DBContract.CartList.COL_PROD_ID + " = ?";
+                break;
+        }
+
+        Cursor cursor = db.query(
+                DBContract.CartList.TABLE_NAME,
+                null,
+                selection,
+                new String[]{id},
+                null,
+                null,
+                null
+        );
+
+        if(cursor != null) {
+            while(cursor.moveToNext()) {
+                CartList cl = new CartList(
+                        cursor.getString(cursor.getColumnIndex(DBContract.CartList.COL_CART_ID)),
+                        cursor.getString(cursor.getColumnIndex(DBContract.CartList.COL_ORDER_ID)),
+                        cursor.getString(cursor.getColumnIndex(DBContract.CartList.COL_PROD_ID)),
+                        cursor.getString(cursor.getColumnIndex(DBContract.CartList.COL_QTY)),
+                        cursor.getString(cursor.getColumnIndex(DBContract.CartList.COL_TOTAL)),
+                        cursor.getString(cursor.getColumnIndex(DBContract.CartList.COL_ORDER_DATE))
+                );
+                cList.add(cl);
+            }
+            cursor.close();
+            db.close();
+            return cList;
+        }
+        return null;
+    }
+
+    public boolean checkCartListItem(String cart_id, String prod_id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String query = "SELECT * FROM " +
+                DBContract.CartList.TABLE_NAME +
+                " WHERE " + DBContract.CartList.COL_CART_ID + " = ?" +
+                " AND " + DBContract.CartList.COL_PROD_ID + " = ?";
+        Cursor cursor = db.rawQuery(query, new String[]{cart_id,prod_id});
+
+        if(cursor.getCount() > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public Order getOrder(String id, int type) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Order order = new Order();
+        String selection = null;
+
+        switch(type){
+            case 1:
+                selection = DBContract.Orders.COL_CUST_ID + " =?";
+                break;
+            case 2:
+                selection = DBContract.Orders.COL_ID + " = ?";
+                break;
+        }
+
+        Cursor cursor = db.query(
+                DBContract.Orders.TABLE_NAME,
+                null,
+                selection,
+                new String[] {id},
+                null,
+                null,
+                null
+        );
+
+        if(cursor != null && cursor.moveToFirst()) {
+            order = new Order(
+                    cursor.getString(cursor.getColumnIndex(DBContract.Orders.COL_ID)),
+                    cursor.getString(cursor.getColumnIndex(DBContract.Orders.COL_CUST_ID)),
+                    cursor.getString(cursor.getColumnIndex(DBContract.Orders.COL_CART_ID)),
+                    cursor.getString(cursor.getColumnIndex(DBContract.Orders.COL_TOTAL)),
+                    cursor.getString(cursor.getColumnIndex(DBContract.Orders.COL_ORDER_MADE_DATE))
+            );
+            cursor.close();
+            db.close();
+
+            return order;
+        }
+        cursor.close();
+        db.close();
+
+        return order;
+    }
+
+    public List<Order> getAllParticularOrders(String cust_id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        List<Order> oList = new ArrayList<>();
+
+        Cursor cursor = db.query(
+                DBContract.Orders.TABLE_NAME,
+                null,
+                DBContract.Orders.COL_CUST_ID + "= ?",
+                new String[]{cust_id},
+                null,
+                null,
+                null
+        );
+
+        if(cursor != null) {
+            while(cursor.moveToNext()) {
+                Order order = new Order(
+                        cursor.getString(cursor.getColumnIndex(DBContract.Orders.COL_ID)),
+                        cursor.getString(cursor.getColumnIndex(DBContract.Orders.COL_CUST_ID)),
+                        cursor.getString(cursor.getColumnIndex(DBContract.Orders.COL_CART_ID)),
+                        cursor.getString(cursor.getColumnIndex(DBContract.Orders.COL_TOTAL)),
+                        cursor.getString(cursor.getColumnIndex(DBContract.Orders.COL_ORDER_MADE_DATE))
+                );
+                oList.add(order);
+            }
+        }
+        cursor.close();
+        db.close();
+
+        return oList;
+    }
+
+    public Payment getStatusPayment(String order_id, String status) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Payment pay = new Payment();
+
+        Cursor cursor = db.query(
+                DBContract.Payment.TABLE_NAME,
+                null,
+                DBContract.Payment.COL_ORDER_ID + " = ? AND " + DBContract.Payment.COL_STATUS + " = ?",
+                new String[]{order_id,status},
+                null,
+                null,
+                null
+        );
+
+        if(cursor != null && cursor.moveToFirst()) {
+            pay = new Payment(
+                    cursor.getString(cursor.getColumnIndex(DBContract.Payment.COL_ID)),
+                    cursor.getString(cursor.getColumnIndex(DBContract.Payment.COL_ORDER_ID)),
+                    cursor.getString(cursor.getColumnIndex(DBContract.Payment.COL_PAY_TYPE)),
+                    cursor.getString(cursor.getColumnIndex(DBContract.Payment.COL_DATE)),
+                    cursor.getString(cursor.getColumnIndex(DBContract.Payment.COL_STATUS))
+            );
+
+            cursor.close();
+            db.close();
+            return pay;
+        }
+        cursor.close();
+        db.close();
+
+        return null;
+    }
+
+    public List<Review> getAllParticularReview(String prod_id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        List<Review> rList = new ArrayList<>();
+
+        Cursor cursor = db.query(
+                DBContract.ProdReview.TABLE_NAME,
+                null,
+                DBContract.ProdReview.COL_PROD_ID + "= ?",
+                new String[]{prod_id},
+                null,
+                null,
+                null
+        );
+
+        if(cursor != null) {
+            while(cursor.moveToNext()) {
+                Review rev  = new Review(
+                        cursor.getString(cursor.getColumnIndex(DBContract.ProdReview.COL_ID)),
+                        cursor.getString(cursor.getColumnIndex(DBContract.ProdReview.COL_PROD_ID)),
+                        cursor.getString(cursor.getColumnIndex(DBContract.ProdReview.COL_CUST_ID)),
+                        cursor.getString(cursor.getColumnIndex(DBContract.ProdReview.COL_PAY_ID)),
+                        cursor.getString(cursor.getColumnIndex(DBContract.ProdReview.COL_COMMENT))
+                );
+                rList.add(rev);
+            }
+        }
+        cursor.close();
+        db.close();
+
+        return rList;
     }
 
     public boolean updateCustPassword(String pass, String id) {
@@ -516,5 +896,73 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 new String[] {id}
         );
         return true;
+    }
+
+    public void updateCartListOrderId(String cart_id, String order_id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(DBContract.CartList.COL_ORDER_ID,order_id);
+
+        db.update(
+          DBContract.CartList.TABLE_NAME,
+          values,
+          DBContract.CartList.COL_CART_ID + " = ?",
+          new String[]{cart_id}
+        );
+    }
+
+    public void updateQtyAndTotalCartList(String cart_id, String qty, String total) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values= new ContentValues();
+        values.put(DBContract.CartList.COL_QTY,qty);
+        values.put(DBContract.CartList.COL_TOTAL,total);
+
+        db.update(
+                DBContract.CartList.TABLE_NAME,
+                values,
+                DBContract.CartList.COL_CART_ID + " =?",
+                new String[] {cart_id}
+        );
+    }
+
+    public void updatePayStatus(String pay_id, String status) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(DBContract.Payment.COL_STATUS,status);
+
+        db.update(
+                DBContract.Payment.TABLE_NAME,
+                values,
+                DBContract.Payment.COL_ID + " = ?",
+                new String[] {pay_id}
+        );
+
+    }
+
+    public boolean deleteProduct(String prod_id) {
+        return this.getWritableDatabase().delete(
+                DBContract.Product.TABLE_NAME,
+                DBContract.Product.COL_ID + "= ?",
+                new String[]{prod_id}
+        ) > 0;
+    }
+
+    public boolean deleteCartList(String cart_id) {
+        return this.getWritableDatabase().delete(
+                DBContract.CartList.TABLE_NAME,
+                DBContract.CartList.COL_CART_ID + "= ?",
+                new String[] {cart_id}
+        ) > 0;
+    }
+
+    public boolean deleteCart(String cart_id) {
+        return this.getWritableDatabase().delete(
+                DBContract.Cart.TABLE_NAME,
+                DBContract.Cart.COL_ID + "= ?",
+                new String[] {cart_id}
+        ) > 0;
     }
 }

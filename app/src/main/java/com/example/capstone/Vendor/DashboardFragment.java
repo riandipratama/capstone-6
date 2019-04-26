@@ -1,6 +1,7 @@
-package com.example.capstone;
+package com.example.capstone.Vendor;
 
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.ClipData;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -8,12 +9,14 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -32,34 +35,43 @@ import com.example.capstone.DB.DatabaseHelper;
 import com.example.capstone.DB.Product;
 import com.example.capstone.DB.ProductImages;
 import com.example.capstone.DB.Vendor;
+import com.example.capstone.R;
+import com.example.capstone.Util.DashboardProductAdapter;
 import com.example.capstone.Util.ProductListAdapter;
 import com.example.capstone.Util.SessionManager;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import static android.app.Activity.RESULT_OK;
 
 public class DashboardFragment extends Fragment implements View.OnClickListener {
 
-    private View rootView;
-    private Spinner saringProduk;
-    private FloatingActionButton addProduct;
-    private int maxPic = 0;
-    private ImageView prodPrev1, prodPrev2, prodPrev3, prodPrev4, prodPrev5;
-    private RecyclerView rvprodvendor;
-    private List<Product> prodList = new ArrayList<>();
-    private List<ProductImages> prodImgList = new ArrayList<>();
-    private List<Vendor> vendorList = new ArrayList<>();
 
-    ProductListAdapter productList;
+    private ImageView prodPrev1, prodPrev2, prodPrev3, prodPrev4, prodPrev5;
+    private EditText namaPrd, qtyProd, hargaProd, descProd;
+    private ProgressDialog progressBar;
+
+    private List<Product> prodList = new ArrayList<>();
+    private List<Bitmap> bitmap = new ArrayList<>();
+    private List<Uri> contentUri = new ArrayList<>();
+    private int maxPic = 0;
+
+    DashboardProductAdapter dashboardAdapter;
     SessionManager session;
     DatabaseHelper helper;
     Product prod;
-    List<Bitmap> bitmap = new ArrayList<>();
+    Dialog dialog_add_product;
+
 
     private String selected;
 
@@ -70,33 +82,30 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.fragment_dashboard, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_dashboard, container, false);
 
         helper = new DatabaseHelper(getActivity());
         session = new SessionManager(getActivity());
 
         prodList = helper.getAllProducts("vendor", session.getUserDetails().get(SessionManager.KEY_ID));
-        prodImgList = new ArrayList<>();
+        List<ProductImages> prodImgList = new ArrayList<>();
         for (int x = 0; x < prodList.size(); x++) {
             prodImgList.add(helper.getProductImages(prodList.get(x).getId()));
-            vendorList.add(helper.getVendor(prodList.get(x).getVendor_id()));
         }
 
-        rvprodvendor = rootView.findViewById(R.id.rv_prod_vendor);
+        RecyclerView rvprodvendor = rootView.findViewById(R.id.rv_prod_vendor);
         rvprodvendor.setHasFixedSize(true);
-        rvprodvendor.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+        rvprodvendor.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        productList = new ProductListAdapter(
+        dashboardAdapter = new DashboardProductAdapter(
                 getActivity(),
                 prodList,
-                prodImgList,
-                vendorList
+                prodImgList
         );
+        rvprodvendor.setAdapter(dashboardAdapter);
 
-        rvprodvendor.setAdapter(productList);
-
-        saringProduk = rootView.findViewById(R.id.saringProduk);
-        addProduct = rootView.findViewById(R.id.floatingActionButton);
+        Spinner saringProduk = rootView.findViewById(R.id.saringProduk);
+        FloatingActionButton addProduct = rootView.findViewById(R.id.floatingActionButton);
         addProduct.setOnClickListener(this);
 
         spinnerAdapter(saringProduk, getResources().getStringArray(R.array.spinDashboard));
@@ -126,14 +135,14 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
     }
 
     public void showDialog() {
-        final Dialog dialog_add_product = new Dialog(getActivity(), R.style.Dialog);
+        dialog_add_product = new Dialog(getActivity(), R.style.Dialog);
         dialog_add_product.setContentView(R.layout.dialog_add_product);
         dialog_add_product.setTitle("Tambah Produk");
 
-        final EditText namaPrd = dialog_add_product.findViewById(R.id.namaProd);
-        final EditText qtyProd = dialog_add_product.findViewById(R.id.qtyProd);
-        final EditText hargaProd = dialog_add_product.findViewById(R.id.hargaProd);
-        final EditText descProd = dialog_add_product.findViewById(R.id.descProd);
+        namaPrd = dialog_add_product.findViewById(R.id.namaProd);
+        qtyProd = dialog_add_product.findViewById(R.id.qtyProd);
+        hargaProd = dialog_add_product.findViewById(R.id.hargaProd);
+        descProd = dialog_add_product.findViewById(R.id.descProd);
         Button btnPilihFoto = dialog_add_product.findViewById(R.id.btnPilihFoto);
         Button btnCancel = dialog_add_product.findViewById(R.id.btnCancelAdd);
         Button btnAddProd = dialog_add_product.findViewById(R.id.btnAddProd);
@@ -154,8 +163,6 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 selected = catIds[position];
-                Toast.makeText(getActivity(), selected, Toast.LENGTH_SHORT).show();
-
             }
 
             @Override
@@ -181,15 +188,14 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
         btnAddProd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                prod = new Product(
-                        namaPrd.getText().toString(),
-                        selected,
-                        qtyProd.getText().toString(),
-                        hargaProd.getText().toString(),
-                        descProd.getText().toString(),
-                        new SessionManager(getActivity()).getUserDetails().get(SessionManager.KEY_ID)
-                );
-                addProductImages(helper.addProduct(prod));
+                new AddProductAsync().execute();
+
+            }
+        });
+
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 dialog_add_product.cancel();
             }
         });
@@ -234,9 +240,9 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
         ImageView prevs[] = {prodPrev1, prodPrev2, prodPrev3, prodPrev3, prodPrev4, prodPrev5};
         if (requestCode == 1 && resultCode == RESULT_OK) {
             if (data.getData() != null) {
-                Uri contentUri = data.getData();
+                contentUri.add(data.getData());
                 try {
-                    bitmap.add(MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), contentUri));
+                    bitmap.add(MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), contentUri.get(0)));
                     prevs[0].setImageBitmap(bitmap.get(0));
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -247,9 +253,9 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
                 ClipData mClipData = data.getClipData();
                 for (int i = 0; i < mClipData.getItemCount(); i++) {
                     ClipData.Item item = mClipData.getItemAt(i);
-                    Uri uri = item.getUri();
+                    contentUri.add(item.getUri());
                     try {
-                        bitmap.add(MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), uri));
+                        bitmap.add(MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), contentUri.get(i)));
                         prevs[i].setImageBitmap(bitmap.get(i));
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -264,33 +270,12 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
         }
     }
 
-    public void addProductImages(long id) {
+    public void addProductImages(long id, String uri) {
 
-        List<String> imgList = new ArrayList<>();
-        String imgpath;
-        File internalStorage = getActivity().getDir("ProdImg", Context.MODE_PRIVATE);
-        for (int i = 0; i < bitmap.size(); i++) {
-            File prodImgPath = new File(internalStorage, id + "-" + i + ".png");
-            imgpath = prodImgPath.toString();
-            imgList.add(imgpath);
-
-            FileOutputStream fos = null;
-            try {
-                fos = new FileOutputStream(prodImgPath);
-                if (bitmap == null) {
-                    bitmap.add(BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.default_nophoto));
-                }
-                bitmap.get(i).compress(Bitmap.CompressFormat.PNG, 100, fos);
-                fos.close();
-            } catch (Exception e) {
-                Log.i("DATABASE", "Problem updating picture", e);
-                imgpath = "";
-            }
-        }
         ProductImages prodImg = new ProductImages();
         prodImg.setId(String.valueOf(id));
-        helper.addProductImages(prodImg, imgList);
-        productList.notifyDataSetChanged();
+        helper.addProductImages(prodImg,uri);
+        dashboardAdapter.notifyDataSetChanged();
     }
 
     public void spinnerAdapter(Spinner spinner, String[] resources) {
@@ -299,6 +284,65 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
                 resources);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
+    }
+
+    class AddProductAsync extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected void onPreExecute(){
+            super.onPreExecute();
+            progressBar = new ProgressDialog(getActivity());
+            progressBar.setCancelable(true);
+            progressBar.setMessage("Please Wait...");
+            progressBar.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            progressBar.show();
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            prodList.add(prod);
+            dialog_add_product.cancel();
+            dashboardAdapter.notifyDataSetChanged();
+            progressBar.dismiss();
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            prod = new Product(
+                    namaPrd.getText().toString(),
+                    selected,
+                    qtyProd.getText().toString(),
+                    hargaProd.getText().toString(),
+                    descProd.getText().toString(),
+                    new SessionManager(getActivity()).getUserDetails().get(SessionManager.KEY_ID)
+            );
+
+            long id = helper.addProduct(prod);
+
+            for(int i = 0; i < contentUri.size(); i++) {
+                StorageReference storeRef = FirebaseStorage.getInstance().getReference()
+                        .child("product-images/" + id + "-" + i);
+                storeRef.putFile(contentUri.get(i))
+                        .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                storeRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                    @Override
+                                    public void onSuccess(Uri uri) {
+                                        addProductImages(id,uri.toString());
+                                    }
+                                });
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+            }
+            return null;
+        }
     }
 
 }

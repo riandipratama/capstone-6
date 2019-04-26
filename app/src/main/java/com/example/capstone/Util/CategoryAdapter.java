@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.capstone.DB.Category;
-import com.example.capstone.ProductList;
+import com.example.capstone.Customer.ProductListActivity;
 import com.example.capstone.R;
 
 import java.util.List;
@@ -59,7 +59,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
         @Override
         public void onClick(View v) {
             Category cCategory = cat_names.get(getAdapterPosition());
-            Intent i = new Intent(context, ProductList.class);
+            Intent i = new Intent(context, ProductListActivity.class);
             i.putExtra("cat_id",cCategory.getId());
             i.putExtra("cat_name",cCategory.getCat_name());
             context.startActivity(i);

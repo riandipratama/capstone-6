@@ -1,4 +1,4 @@
-package com.example.capstone;
+package com.example.capstone.Vendor;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.example.capstone.DB.DatabaseHelper;
 import com.example.capstone.DB.Vendor;
+import com.example.capstone.R;
 import com.example.capstone.Util.SessionManager;
 import com.mikhaellopez.circularimageview.CircularImageView;
 

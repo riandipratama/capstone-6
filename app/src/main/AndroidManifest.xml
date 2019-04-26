@@ -14,24 +14,25 @@
         android:roundIcon="@mipmap/ic_launcher_rencara_round"
         android:supportsRtl="true"
         android:theme="@style/SplashTheme">
-        <activity android:name=".ProductList"></activity>
-        <activity android:name=".ProductDetails" />
-        <activity android:name=".EditCust" />
+        <activity android:name=".Customer.OrderDetails"></activity>
+        <activity android:name=".Customer.ProductListActivity" />
+        <activity android:name=".Customer.ProductDetailsActivity" />
+        <activity android:name=".Customer.EditCustActivity" />
         <activity
-            android:name=".DashboardActivity"
+            android:name=".Vendor.DashboardActivity"
             android:label="@string/title_activity_dashboard"
             android:theme="@style/SplashTheme.NoActionBar" />
         <activity
-            android:name=".MainActivity"
+            android:name=".Customer.MainActivity"
             android:theme="@style/SplashTheme.NoActionBar" />
-        <activity android:name=".SignIn">
+        <activity android:name=".SignInActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Signup" />
+        <activity android:name=".SignUpActivity" />
     </application>
 
 </manifest>

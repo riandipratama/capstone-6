@@ -1,4 +1,4 @@
-package com.example.capstone;
+package com.example.capstone.Customer;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -19,13 +19,14 @@ import com.example.capstone.DB.DatabaseHelper;
 import com.example.capstone.DB.Product;
 import com.example.capstone.DB.ProductImages;
 import com.example.capstone.DB.Vendor;
+import com.example.capstone.R;
 import com.example.capstone.Util.ProductListAdapter;
 import com.example.capstone.Util.SessionManager;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProductList extends AppCompatActivity {
+public class ProductListActivity extends AppCompatActivity {
 
     RecyclerView rvlist;
     DatabaseHelper helper;
@@ -69,9 +70,9 @@ public class ProductList extends AppCompatActivity {
         });
 
         rvlist.setHasFixedSize(true);
-        rvlist.setLayoutManager(new GridLayoutManager(ProductList.this,2));
+        rvlist.setLayoutManager(new GridLayoutManager(ProductListActivity.this,2));
         productListAdapter = new ProductListAdapter(
-                ProductList.this,
+                ProductListActivity.this,
                 prodList,
                 prodImgList,
                 vendorList
@@ -140,7 +141,7 @@ public class ProductList extends AppCompatActivity {
                 backBuild.setPositiveButton("Ya", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        new SessionManager(ProductList.this).logoutUser();
+                        new SessionManager(ProductListActivity.this).logoutUser();
                         finish();
                     }
                 });

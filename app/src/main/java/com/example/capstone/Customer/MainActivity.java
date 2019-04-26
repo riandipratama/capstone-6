@@ -1,6 +1,7 @@
-package com.example.capstone;
+package com.example.capstone.Customer;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -12,30 +13,31 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.TextView;
 
+import com.example.capstone.R;
 import com.example.capstone.Util.SessionManager;
 
-public class DashboardActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity {
 
-    private Toolbar toolbar;
-    private SessionManager session;
+    Toolbar toolbar;
+    SessionManager session;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_dashboard);
+        setContentView(R.layout.activity_main);
+        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
+        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         session = new SessionManager(this);
-        session.checkLogin();
+        session.checkLogin(1);
 
-        loadFragment(new DashboardFragment());
+        Intent i = getIntent();
+        Boolean whatFrag = i.getBooleanExtra("toCart",false);
+        loadFragment(whatFrag ? new CartFragment() : new HomeFragment());
 
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -45,17 +47,17 @@ public class DashboardActivity extends AppCompatActivity {
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             Fragment fragment = null;
             switch (item.getItemId()) {
-                case R.id.navigation_dashboard:
-                    fragment = new DashboardFragment();
+                case R.id.navigation_home:
+                    fragment = new HomeFragment();
                     break;
-                case R.id.navigation_order:
-                    fragment = new OrderFragment();
+                case R.id.navigation_cart:
+                    fragment = new CartFragment();
                     break;
                 case R.id.navigation_account:
-                    fragment = new AccountVendorFragment();
+                    fragment = new AccountFragment();
                     break;
                 default:
-                    fragment = new DashboardFragment();
+                    fragment = new HomeFragment();
             }
             loadFragment(fragment);
             return true;
@@ -102,6 +104,9 @@ public class DashboardActivity extends AppCompatActivity {
                 });
                 backBuild.show();
                 return true;
+//            case R.id.help:
+//                showHelp();
+//                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }

@@ -1,4 +1,4 @@
-package com.example.capstone;
+package com.example.capstone.Customer;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.capstone.DB.DatabaseHelper;
+import com.example.capstone.R;
 import com.example.capstone.Util.CategoryAdapter;
 
 public class HomeFragment extends Fragment {

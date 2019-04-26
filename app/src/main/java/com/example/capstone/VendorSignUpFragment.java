@@ -1,16 +1,17 @@
 package com.example.capstone;
 
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.design.widget.Snackbar;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
@@ -21,16 +22,21 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.capstone.DB.Customer;
 import com.example.capstone.DB.DatabaseHelper;
+import com.example.capstone.DB.Vendor;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.UUID;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -38,14 +44,16 @@ import static android.app.Activity.RESULT_OK;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class register_cust extends Fragment {
+public class VendorSignUpFragment extends Fragment {
 
-    EditText email, pass, repass, fname, lname, address, city, phone;
+    EditText email, pass, repass, name, address, city, phone;
     ImageView profilePreview;
     DatabaseHelper helper;
-    Bitmap bitmap;
+    private ProgressDialog progressBar;
+    private Uri contentUri;
 
-    public register_cust() {
+
+    public VendorSignUpFragment() {
         // Required empty public constructor
     }
 
@@ -54,13 +62,12 @@ public class register_cust extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_register_cust, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_register_vendor, container, false);
 
         email = rootView.findViewById(R.id.etEmail);
         pass = rootView.findViewById(R.id.etPass);
         repass = rootView.findViewById(R.id.etPassRepeat);
-        fname = rootView.findViewById(R.id.etFName);
-        lname = rootView.findViewById(R.id.etLName);
+        name = rootView.findViewById(R.id.etName);
         address = rootView.findViewById(R.id.etAddress);
         city = rootView.findViewById(R.id.etCity);
         phone = rootView.findViewById(R.id.etPhone);
@@ -77,15 +84,34 @@ public class register_cust extends Fragment {
         signUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addNewUser();
+                if(validate()) {
+                    String Email = email.getText().toString();
+                    String Pass = pass.getText().toString();
+
+                    helper = new DatabaseHelper(getActivity());
+
+                    if (!helper.isUserExists(Email)) {
+
+                        new SignUpAsyncTask().execute();
+
+                        Toast.makeText(getContext(),"Berhasil Daftar sebagai Vendor!",Toast.LENGTH_LONG).show();
+                        Intent i = new Intent(getActivity(), SignInActivity.class);
+                        i.putExtra("email",Email);
+                        i.putExtra("pass",Pass);
+                        getActivity().startActivity(i);
+                        getActivity().finish();
+                    } else {
+                        Toast.makeText(getContext(),"Pengguna sudah terdaftar!",Toast.LENGTH_LONG).show();
+                    }
+                }
             }
         });
 
-        TextView signin = rootView.findViewById(R.id.signin);
-        signin.setOnClickListener(new View.OnClickListener() {
+        TextView signup = rootView.findViewById(R.id.signin);
+        signup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(getActivity(),SignIn.class);
+                Intent i = new Intent(getActivity(), SignInActivity.class);
                 getActivity().startActivity(i);
             }
         });
@@ -93,59 +119,66 @@ public class register_cust extends Fragment {
         return rootView;
     }
 
+    class SignUpAsyncTask extends AsyncTask<Void, Void, Boolean> {
 
-    public void addNewUser() {
-        if(validate()) {
-            String Email = email.getText().toString();
-            String Pass = pass.getText().toString();
-            String FName = fname.getText().toString();
-            String LName = lname.getText().toString();
-            String Address = address.getText().toString();
-            String City = city.getText().toString();
-            String Phone = phone.getText().toString();
+        @Override
+        protected void onPreExecute(){
+            super.onPreExecute();
+            progressBar = new ProgressDialog(getActivity());
+            progressBar.setCancelable(true);
+            progressBar.setMessage("Please Wait...");
+            progressBar.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            progressBar.show();
+        }
 
-            helper = new DatabaseHelper(getActivity());
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            super.onPostExecute(aBoolean);
+                progressBar.dismiss();
+        }
 
-            if (!helper.isUserExists(Email)) {
-                String imgpath = "";
-                File internalStorage = getActivity().getDir("CustProfile", Context.MODE_PRIVATE);
-                File custProfilePath = new File(internalStorage, Email + ".png");
-                imgpath = custProfilePath.toString();
+        @Override
+        protected Boolean doInBackground(Void... voids) {
 
-                FileOutputStream fos = null;
-                try{
-                    fos = new FileOutputStream(custProfilePath);
-                    if (bitmap == null) {
-                        bitmap = BitmapFactory.decodeResource(getActivity().getResources(),R.drawable.default_cust);
-                    }
-                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
-                    fos.close();
-                } catch (Exception e) {
-                    Log.i("DATABASE", "Problem updating picture", e);
-                    imgpath = "";
-                }
+            String[] imgpath = new String[1];
 
-                Customer cust = new Customer();
-                cust.setEmail(Email);
-                cust.setPass(Pass);
-                cust.setFname(FName);
-                cust.setLname(LName);
-                cust.setAddress(Address);
-                cust.setCity(City);
-                cust.setPhone(Phone);
-                cust.setImage(imgpath);
-
-                helper.addCust(cust);
-
-                Toast.makeText(getContext(),"Berhasil Daftar sebagai Customer!",Toast.LENGTH_LONG).show();
-                Intent i = new Intent(getActivity(),SignIn.class);
-                i.putExtra("email",Email);
-                i.putExtra("pass",Pass);
-                getActivity().startActivity(i);
-                getActivity().finish();
-            } else {
-                Toast.makeText(getContext(),"Pengguna sudah terdaftar!",Toast.LENGTH_LONG).show();
+            if(contentUri == null) {
+                contentUri = Uri.parse("android.resource://com.example.capstone/drawable/default_cust");
             }
+
+            final StorageReference storeRef = FirebaseStorage.getInstance().getReference()
+                    .child("vendor-profiles/" + UUID.randomUUID().toString());
+            storeRef.putFile(contentUri)
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            storeRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    Vendor vendor = new Vendor(
+                                            email.getText().toString(),
+                                            pass.getText().toString(),
+                                            name.getText().toString(),
+                                            address.getText().toString(),
+                                            city.getText().toString(),
+                                            phone.getText().toString(),
+                                            uri.toString(),
+                                            null
+                                    );
+                                    helper.addVendor(vendor);
+                                }
+                            });
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(getActivity(), "Gagal Menambahkan Foto", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                    });
+
+            return null;
         }
     }
 
@@ -156,11 +189,9 @@ public class register_cust extends Fragment {
         String Email = email.getText().toString();
         String Pass = pass.getText().toString();
         String Repass = repass.getText().toString();
-        String FName = fname.getText().toString();
-        String LName = lname.getText().toString();
+        String Name = name.getText().toString();
         String Address = address.getText().toString();
         String City = city.getText().toString();
-        String Phone = phone.getText().toString();
 
         if(!Patterns.EMAIL_ADDRESS.matcher(Email).matches()) {
             valid = false;
@@ -191,20 +222,12 @@ public class register_cust extends Fragment {
             repass.setError(null);
         }
 
-        if(FName.isEmpty()) {
+        if(Name.isEmpty()) {
             valid = false;
-            fname.setError("Isi Nama Depan Anda");
+            name.setError("Isi Nama Vendor/Perusahaan Anda");
         } else {
             valid = true;
-            fname.setError(null);
-        }
-
-        if(LName.isEmpty()) {
-            valid = false;
-            lname.setError("Isi Nama Belakang Anda");
-        } else {
-            valid = true;
-            lname.setError(null);
+            name.setError(null);
         }
 
         if(Address.isEmpty()) {
@@ -221,19 +244,6 @@ public class register_cust extends Fragment {
         } else {
             valid = true;
             city.setError(null);
-        }
-
-        if(Phone.isEmpty()) {
-            valid = false;
-            phone.setError("Isi Nomor Telepon Anda");
-        } else {
-            if (Phone.length() < 10 || Phone.length() > 13 ) {
-                valid = false;
-                phone.setError("No. Telp Tidak Valid");
-            } else {
-                valid = true;
-                phone.setError(null);
-            }
         }
 
         return valid;
@@ -270,18 +280,19 @@ public class register_cust extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == 1 && resultCode == RESULT_OK && data.getData() != null) {
-            Uri contentUri = data.getData();
+            contentUri = data.getData();
             try {
-                bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), contentUri);
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), contentUri);
                 profilePreview.setImageBitmap(bitmap);
             } catch (IOException e) {
                 e.printStackTrace();
                 Toast.makeText(getActivity(), "Failed!", Toast.LENGTH_SHORT).show();
             }
         } else if (requestCode == 2) {
-            bitmap = (Bitmap) data.getExtras().get("data");
+            Bitmap bitmap = (Bitmap) data.getExtras().get("data");
             profilePreview.setImageBitmap(bitmap);
         }
     }
+
 
 }

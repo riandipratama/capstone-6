@@ -11,14 +11,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.capstone.DB.DatabaseHelper;
 import com.example.capstone.DB.Product;
 import com.example.capstone.DB.ProductImages;
 import com.example.capstone.DB.Vendor;
-import com.example.capstone.ProductDetails;
+import com.example.capstone.Customer.ProductDetailsActivity;
 import com.example.capstone.R;
+import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.ViewHolder> {
@@ -88,12 +87,12 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
             prodName.setText(cProd.getName());
             prodPrice.setText(cProd.getPrice());
             prodCity.setText(cVendor.getCity());
-            prodImgCard.setImageBitmap(BitmapFactory.decodeFile(cProdImg.getImgPath()));
+            Picasso.get().load(cProdImg.getImgPath()).into(prodImgCard);
         }
 
         @Override
         public void onClick(View v) {
-            Intent i = new Intent(context, ProductDetails.class);
+            Intent i = new Intent(context, ProductDetailsActivity.class);
             i.putExtra("prod_id",prod.get(getAdapterPosition()).getId());
             context.startActivity(i);
         }
