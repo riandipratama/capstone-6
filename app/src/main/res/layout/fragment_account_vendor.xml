@@ -14,8 +14,8 @@
 
         <com.mikhaellopez.circularimageview.CircularImageView
             android:id="@+id/profileImage"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
             android:layout_marginTop="36dp"
             android:layout_marginEnd="36dp"
             android:scaleType="centerCrop"
@@ -33,12 +33,13 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="36dp"
-            android:layout_marginTop="36dp"
+            android:layout_marginTop="116dp"
             android:layout_marginEnd="10dp"
             android:text="TextView"
-            android:textSize="18dp"
+            android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toStartOf="@+id/profileImage"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -52,6 +53,199 @@
             android:drawableLeft="@drawable/ic_location"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/nameVendor" />
+
+        <ScrollView
+            android:id="@+id/scrollView2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="300dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/profileImage">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@drawable/setting_border">
+
+                    <TextView
+                        android:id="@+id/changePass"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="16dp"
+                        android:layout_marginVertical="16dp"
+                        android:text="@string/ubah_password"
+                        android:textSize="30sp"
+                        android:textStyle="bold"/>
+
+                    <android.support.design.widget.TextInputLayout
+                        android:id="@+id/OldPass"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:passwordToggleEnabled="true"
+                        android:visibility="gone">
+
+                        <EditText
+                            android:id="@+id/etOldPass"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="32dp"
+                            android:layout_marginRight="32dp"
+                            android:layout_marginBottom="64dp"
+                            android:hint="Isi Password Lama Anda"
+                            android:inputType="textPassword" />
+
+                    </android.support.design.widget.TextInputLayout>
+
+                    <android.support.design.widget.TextInputLayout
+                        android:id="@+id/Pass"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:passwordToggleEnabled="true"
+                        android:visibility="gone">
+
+                        <EditText
+                            android:id="@+id/etPass"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="32dp"
+                            android:layout_marginRight="32dp"
+                            android:layout_marginBottom="64dp"
+                            android:hint="Isi Password Baru Anda"
+                            android:inputType="textPassword" />
+
+                    </android.support.design.widget.TextInputLayout>
+
+                    <android.support.design.widget.TextInputLayout
+                        android:id="@+id/PassRepeat"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:passwordToggleEnabled="true"
+                        android:visibility="gone">
+
+                        <EditText
+                            android:id="@+id/etPassRepeat"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="32dp"
+                            android:layout_marginRight="32dp"
+                            android:layout_marginBottom="64dp"
+                            android:hint="Ulangi Password Baru Anda"
+                            android:inputType="textPassword" />
+
+                    </android.support.design.widget.TextInputLayout>
+
+                    <Button
+                        android:id="@+id/btnChangePass"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="16dp"
+                        android:layout_marginHorizontal="120dp"
+                        android:text="@string/simpan"
+                        android:visibility="gone"
+                        android:background="@drawable/yellow_button"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@drawable/setting_border">
+
+                    <TextView
+                        android:id="@+id/editProfile"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="16dp"
+                        android:layout_marginVertical="16dp"
+                        android:text="@string/pengaturan_akun"
+                        android:textSize="30sp"
+                        android:textStyle="bold"/>
+
+
+                    <EditText
+                        android:id="@+id/etEmail"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="32dp"
+                        android:layout_marginRight="32dp"
+                        android:layout_marginBottom="64dp"
+                        android:hint="Isi Email Anda"
+                        android:inputType="textEmailAddress"
+                        android:visibility="gone"/>
+
+                    <EditText
+                        android:id="@+id/etName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="32dp"
+                        android:layout_marginRight="32dp"
+                        android:layout_marginBottom="64dp"
+                        android:hint="Nama Perusahaan Anda"
+                        android:inputType="text"
+                        android:visibility="gone"/>
+
+                    <EditText
+                        android:id="@+id/etAddress"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="32dp"
+                        android:layout_marginRight="32dp"
+                        android:layout_marginBottom="64dp"
+                        android:ems="10"
+                        android:hint="Isi Alamat Anda"
+                        android:inputType="textMultiLine"
+                        android:visibility="gone"/>
+
+                    <EditText
+                        android:id="@+id/etCity"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="32dp"
+                        android:layout_marginRight="32dp"
+                        android:layout_marginBottom="64dp"
+                        android:hint="Isi Kota Anda"
+                        android:inputType="text"
+                        android:visibility="gone"/>
+
+                    <EditText
+                        android:id="@+id/etPhone"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="32dp"
+                        android:layout_marginRight="32dp"
+                        android:layout_marginBottom="64dp"
+                        android:hint="Isi No. Telepon Anda"
+                        android:inputType="phone"
+                        android:visibility="gone"/>
+
+                    <Button
+                        android:id="@+id/btnEditProfile"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="16dp"
+                        android:layout_marginHorizontal="120dp"
+                        android:text="@string/simpan"
+                        android:visibility="gone"
+                        android:background="@drawable/yellow_button"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </ScrollView>
+
 
     </android.support.constraint.ConstraintLayout>
 

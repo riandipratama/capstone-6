@@ -503,7 +503,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             String city = vendorCursor.getString(vendorCursor.getColumnIndex(DBContract.Vendor.COL_CITY));
             String phone = vendorCursor.getString(vendorCursor.getColumnIndex(DBContract.Vendor.COL_PHONE));
             String image = vendorCursor.getString(vendorCursor.getColumnIndex(DBContract.Vendor.COL_IMAGE));
-            Vendor vendor = new Vendor(id,emailUser,name,address,city,phone,image,null);
+            Vendor vendor = new Vendor(id,emailUser,name,address,city,phone,image);
 
             vendorCursor.close();
             db.close();
@@ -874,6 +874,44 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         db.update(
                 DBContract.Customer.TABLE_NAME,
+                values,
+                where,
+                new String[]{id}
+        );
+
+        return true;
+    }
+
+    public boolean updateVendorPassword(String pass, String id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(DBContract.Vendor.COL_PASS,pass);
+        String where = DBContract.Vendor.COL_ID + "= ?";
+
+        db.update(
+                DBContract.Vendor.TABLE_NAME,
+                values,
+                where,
+                new String[] {id}
+        );
+        return true;
+    }
+
+    public boolean updateVendorProfile(Vendor vendor, String id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(DBContract.Vendor.COL_EMAIL,vendor.getEmail());
+        values.put(DBContract.Vendor.COL_NAME,vendor.getName());
+        values.put(DBContract.Vendor.COL_ADDRESS,vendor.getAddress());
+        values.put(DBContract.Vendor.COL_CITY,vendor.getCity());
+        values.put(DBContract.Vendor.COL_PHONE,vendor.getPhone());
+
+        String where = DBContract.Vendor.COL_ID + "= ?";
+
+        db.update(
+                DBContract.Vendor.TABLE_NAME,
                 values,
                 where,
                 new String[]{id}

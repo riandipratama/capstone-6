@@ -25,6 +25,14 @@ public class Vendor {
         this.image = image;
     }
 
+    public Vendor(String email, String name, String address, String city, String phone){
+        this.email = email;
+        this.name = name;
+        this.address = address;
+        this.city = city;
+        this.phone = phone;
+    }
+
     public Vendor(String email, String pass, String name, String address, String city, String phone, String image, String just_null){
         this.email = email;
         this.pass = pass;
@@ -70,5 +78,7 @@ public class Vendor {
         return image;
     }
 
-
+    public void setPass(String pass) {
+        this.pass = pass;
+    }
 }

@@ -104,22 +104,8 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
         );
         rvprodvendor.setAdapter(dashboardAdapter);
 
-        Spinner saringProduk = rootView.findViewById(R.id.saringProduk);
         FloatingActionButton addProduct = rootView.findViewById(R.id.floatingActionButton);
         addProduct.setOnClickListener(this);
-
-        spinnerAdapter(saringProduk, getResources().getStringArray(R.array.spinDashboard));
-        saringProduk.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String item = parent.getItemAtPosition(position).toString();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
 
         // Inflate the layout for this fragment
         return rootView;

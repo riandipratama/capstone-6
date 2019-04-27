@@ -239,8 +239,8 @@ public class EditCustActivity extends AppCompatActivity implements View.OnClickL
     //attached in xml to btnChangePass
     public void updatePass(View view) {
         if(validatePass()) {
-            String[] result = helper.authenticateUser(user.get("KEY_EMAIL"),etOldPass.getText().toString());
-            if(result[1].equals(user.get("KEY_ID"))){
+            String[] result = helper.authenticateUser(user.get(SessionManager.KEY_EMAIL),etOldPass.getText().toString());
+            if(result[1].equals(user.get(SessionManager.KEY_ID))){
                 cust.setPass(etReNewPass.getText().toString());
                 if(helper.updateCustPassword(cust.getPass(),user.get("KEY_ID"))){
                     Snackbar.make(view,"Password berhasil diganti",Snackbar.LENGTH_SHORT).show();

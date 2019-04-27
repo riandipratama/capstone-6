@@ -22,27 +22,6 @@
                 android:textStyle="bold"
                 android:textSize="20sp"/>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:layout_weight="1"
-                    android:text="Saring Berdasarkan :"/>
-
-                <Spinner
-                    android:id="@+id/saringProduk"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:layout_weight="1"/>
-
-            </LinearLayout>
-
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rv_prod_vendor"
                 android:layout_width="match_parent"
