@@ -20,6 +20,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -89,8 +90,8 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
         editProfile = rootView.findViewById(R.id.editProfile);
         rvCustOrder = rootView.findViewById(R.id.rvCustOrder);
         rgOrder = rootView.findViewById(R.id.rgCustOrder);
-        rbPaid = rootView.findViewById(R.id.rbPaid);
-        rbUnpaid = rootView.findViewById(R.id.rbUnpaid);
+        rbPaid = rootView.findViewById(R.id.rbUnpaid);
+        rbUnpaid = rootView.findViewById(R.id.rbPaid);
 
         user = session.getUserDetails();
 
@@ -102,26 +103,54 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
         editProfile.setOnClickListener(this);
         profileImg.setOnClickListener(this);
 
-//        rbUnpaid.setChecked(true);
-//        new rvUnpaidAsync().execute();
+        rvCustOrder.setHasFixedSize(true);
+        rvCustOrder.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        rgOrder.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+//        rbPaid.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                new rvPaidAsync().execute();
+//            }
+//        });
+
+        rbPaid.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                switch(checkedId) {
-                    case R.id.rbPaid :
-                        new rvPaidAsync().execute();
-                        break;
-                    case R.id.rbUnpaid :
-                        new rvUnpaidAsync().execute();
-                        break;
-                    default:
-                        rbUnpaid.setChecked(true);
-                        new rvUnpaidAsync().execute();
-                        break;
-                }
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                new rvPaidAsync().execute();
             }
         });
+
+        rbUnpaid.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                new rvUnpaidAsync().execute();
+            }
+        });
+
+//        rbUnpaid.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                new rvUnpaidAsync().execute();
+//            }
+//        });
+
+//        rgOrder.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(RadioGroup group, int checkedId) {
+//                switch(checkedId) {
+//                    case R.id.rbPaid :
+//                        new rvPaidAsync().execute();
+//                        break;
+//                    case R.id.rbUnpaid :
+//                        new rvUnpaidAsync().execute();
+//                        break;
+//                    default:
+//                        rbUnpaid.setChecked(true);
+//                        new rvUnpaidAsync().execute();
+//                        break;
+//                }
+//            }
+//        });
 
         // Inflate the layout for this fragment
         return rootView;
@@ -280,8 +309,7 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
                         totalPay.add(helper.getOrder(payments.get(i).getOrder_id(),2).getTotal_price());
                     }
                 }
-                rvCustOrder.setHasFixedSize(true);
-                rvCustOrder.setLayoutManager(new LinearLayoutManager(getActivity()));
+
                 rvCustOrder.setAdapter(new OrderAdapter(
                         getActivity(),
                         payments,
@@ -328,8 +356,6 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
                         totalPay.add(helper.getOrder(payments.get(i).getOrder_id(),2).getTotal_price());
                     }
                 }
-                rvCustOrder.setHasFixedSize(true);
-                rvCustOrder.setLayoutManager(new LinearLayoutManager(getActivity()));
                 rvCustOrder.setAdapter(new OrderAdapter(
                         getActivity(),
                         payments,

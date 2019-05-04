@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
@@ -32,6 +33,7 @@ public class OrderFragment extends Fragment {
 
     private RecyclerView rvCustOrder;
     private RadioGroup rgOrder;
+    private RadioButton rbPaid, rbUnpaid;
     private SessionManager session;
     private DatabaseHelper helper;
 
@@ -47,21 +49,40 @@ public class OrderFragment extends Fragment {
         initClasses();
 
         rvCustOrder = rootView.findViewById(R.id.rvCustOrder);
-        rgOrder = rootView.findViewById(R.id.rgCustOrder);
+        rvCustOrder.setHasFixedSize(true);
+        rvCustOrder.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        rgOrder.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+        rgOrder = rootView.findViewById(R.id.rgCustOrder);
+        rbPaid = rootView.findViewById(R.id.rbPaid);
+        rbUnpaid = rootView.findViewById(R.id.rbUnpaid);
+
+        rbPaid.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                switch(checkedId) {
-                    case R.id.rbPaid :
-                        new rvPaidAsync().execute();
-                        break;
-                    case R.id.rbUnpaid :
-                        new rvUnpaidAsync().execute();
-                        break;
-                }
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                new rvPaidAsync().execute();
             }
         });
+
+        rbUnpaid.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                new rvUnpaidAsync().execute();
+            }
+        });
+
+//        rgOrder.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(RadioGroup group, int checkedId) {
+//                switch(checkedId) {
+//                    case R.id.rbPaid :
+//                        new rvPaidAsync().execute();
+//                        break;
+//                    case R.id.rbUnpaid :
+//                        new rvUnpaidAsync().execute();
+//                        break;
+//                }
+//            }
+//        });
 
         // Inflate the layout for this fragment
         return rootView;
@@ -77,7 +98,7 @@ public class OrderFragment extends Fragment {
         @Override
         protected List<Payment> doInBackground(Void... voids) {
             List<Product> pList;
-            List<CartList> cList = new ArrayList<>();
+            List<List<CartList>> cList = new ArrayList<>();
             List<Order> oList = new ArrayList<>();
             List<Payment> payList = new ArrayList<>();
 
@@ -87,14 +108,18 @@ public class OrderFragment extends Fragment {
 
             for(int i = 0; i < pList.size(); i++) {
                 if(pList.get(i).getId() != null) {
-                    cList.add(helper.getCartList(pList.get(i).getId()));
+                    cList.add(helper.getAllParticularCartList(pList.get(i).getId(),3));
                 }
             }
 
-            Log.e("CLIST",cList.get(0).getOrder_id());
+            //Log.e("CLIST",cList.get(0).getOrder_id());
 
             for(int i = 0; i < cList.size(); i++) {
-                oList.add(helper.getOrder(cList.get(i).getOrder_id(),2));
+                List<CartList> cListInner = cList.get(i);
+                for(int j = 0; j < cListInner.size(); j++) {
+                    oList.add(helper.getOrder(cListInner.get(j).getOrder_id(),2));
+                }
+
             }
 
             //Log.e("OLIST",oList.get(0).getId());
@@ -132,8 +157,7 @@ public class OrderFragment extends Fragment {
                         custList.add(helper.getCustomer(order.getCust_id()));
                     }
                 }
-                rvCustOrder.setHasFixedSize(true);
-                rvCustOrder.setLayoutManager(new LinearLayoutManager(getActivity()));
+
                 rvCustOrder.setAdapter(new OrderAdapter(
                         getActivity(),
                         payments,
@@ -150,7 +174,7 @@ public class OrderFragment extends Fragment {
         @Override
         protected List<Payment> doInBackground(Void... voids) {
             List<Product> pList;
-            List<CartList> cList = new ArrayList<>();
+            List<List<CartList>> cList = new ArrayList<>();
             List<Order> oList = new ArrayList<>();
             List<Payment> payList = new ArrayList<>();
 
@@ -160,17 +184,16 @@ public class OrderFragment extends Fragment {
 
             for(int i = 0; i < pList.size(); i++) {
                 if(pList.get(i).getId() != null) {
-                    cList.add(helper.getCartList(pList.get(i).getId()));
+                    cList.add(helper.getAllParticularCartList(pList.get(i).getId(),3));
                 }
             }
 
-            CartList cart = helper.getCartList(pList.get(0).getId());
-            Log.e("CARTLIST",cart.getOrder_id());
-
-            Log.e("CLIST",cList.get(0).getOrder_id());
-
             for(int i = 0; i < cList.size(); i++) {
-                oList.add(helper.getOrder(cList.get(i).getOrder_id(),2));
+                List<CartList> cListInner = cList.get(i);
+                for(int j = 0; j < cListInner.size(); j++) {
+                    oList.add(helper.getOrder(cListInner.get(j).getOrder_id(),2));
+                }
+
             }
 
             //Log.e("OLIST",oList.get(0).getId());
@@ -209,8 +232,6 @@ public class OrderFragment extends Fragment {
                     }
                 }
 
-                rvCustOrder.setHasFixedSize(true);
-                rvCustOrder.setLayoutManager(new LinearLayoutManager(getActivity()));
                 rvCustOrder.setAdapter(new OrderAdapter(
                         getActivity(),
                         payments,

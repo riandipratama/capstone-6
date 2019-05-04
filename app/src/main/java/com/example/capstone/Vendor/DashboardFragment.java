@@ -88,9 +88,17 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
         session = new SessionManager(getActivity());
 
         prodList = helper.getAllProducts("vendor", session.getUserDetails().get(SessionManager.KEY_ID));
+        List<List<ProductImages>> prodImgListDouble = new ArrayList<>();
         List<ProductImages> prodImgList = new ArrayList<>();
         for (int x = 0; x < prodList.size(); x++) {
-            prodImgList.add(helper.getProductImages(prodList.get(x).getId()));
+            prodImgListDouble.add(helper.getAllParticularProductImages(prodList.get(x).getId()));
+            if(prodImgListDouble.get(x).size() > 0) {
+                prodImgList.add(prodImgListDouble.get(x)
+                        .get(0));
+            } else {
+                Toast.makeText(getActivity(),String.valueOf(prodImgListDouble.size()), Toast.LENGTH_SHORT).show();
+                break;
+            }
         }
 
         RecyclerView rvprodvendor = rootView.findViewById(R.id.rv_prod_vendor);
@@ -323,6 +331,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
                         }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
+                        Log.e("Error",e.getMessage());
                         e.printStackTrace();
                     }
                 });

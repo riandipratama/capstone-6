@@ -14,7 +14,8 @@
         android:roundIcon="@mipmap/ic_launcher_rencara_round"
         android:supportsRtl="true"
         android:theme="@style/SplashTheme">
-        <activity android:name=".Customer.OrderDetails"></activity>
+        <activity android:name=".Customer.OrderPaidDetailActivity"></activity>
+        <activity android:name=".Customer.OrderDetails" />
         <activity android:name=".Customer.ProductListActivity" />
         <activity android:name=".Customer.ProductDetailsActivity" />
         <activity android:name=".Customer.EditCustActivity" />

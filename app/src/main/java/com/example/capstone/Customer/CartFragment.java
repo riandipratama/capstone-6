@@ -109,6 +109,7 @@ public class CartFragment extends Fragment implements View.OnClickListener {
                 );
 
                 String order_id = helper.addOrder(order);
+                Log.e("orderid",order_id);
 
                 Payment pay = new Payment(
                         order_id,

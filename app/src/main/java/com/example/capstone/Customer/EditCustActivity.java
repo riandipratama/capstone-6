@@ -262,7 +262,7 @@ public class EditCustActivity extends AppCompatActivity implements View.OnClickL
                     city.getText().toString(),
                     phone.getText().toString());
             if(helper.updateCustProfile(cust,user.get("KEY_ID"))) {
-                session.createLoginSession(user.get("KEY_ID"),email.getText().toString(),1);
+                //session.createLoginSession(user.get("KEY_ID"),email.getText().toString(),1);
                 Snackbar.make(view,"Profil berhasil diupdate",Snackbar.LENGTH_SHORT).show();
                 editProfile.performClick();
             } else {

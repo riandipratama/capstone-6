@@ -423,6 +423,32 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return prodImg;
     }
 
+    public List<ProductImages> getAllParticularProductImages(String prod_id){
+        SQLiteDatabase db = this.getWritableDatabase();
+        List<ProductImages> imgList = new ArrayList<>();
+
+        Cursor cursor = db.query(
+                DBContract.ProductImages.TABLE_NAME,
+                null,
+                DBContract.ProductImages.COL_ID + " = ?",
+                new String[]{prod_id},
+                null,
+                null,
+                null
+        );
+
+        if(cursor != null) {
+            while(cursor.moveToNext()) {
+                ProductImages prodImg = new ProductImages(
+                        cursor.getString(cursor.getColumnIndex(DBContract.ProductImages.COL_ID)),
+                        cursor.getString(cursor.getColumnIndex(DBContract.ProductImages.COL_IMAGE))
+                );
+                imgList.add(prodImg);
+            }
+        }
+        return imgList;
+    }
+
     public List<ProductImages> getAllProductImages (String id) {
         SQLiteDatabase db = this.getReadableDatabase();
         List<ProductImages> prodList = new ArrayList<>();
@@ -568,26 +594,33 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     cursor.getString(cursor.getColumnIndex(DBContract.Cart.COL_CUST_ID))
             );
 
-            cursor.close();
-            db.close();
+//            cursor.close();
+//            db.close();
 
             return cart;
         }
 
-        cursor.close();
-        db.close();
+//        cursor.close();
+//        db.close();
 
         return cart;
     }
 
-    public CartList getCartList(String prod_id) {
+    public CartList getCartList(String prod_id, int type) {
         SQLiteDatabase db = this.getReadableDatabase();
         CartList cl = new CartList();
+        String selection = "";
+
+        if(type == 1) {
+            selection = DBContract.CartList.COL_PROD_ID + " = ?";
+        } else if (type == 2) {
+            selection = DBContract.CartList.COL_ORDER_ID + " = ?";
+        }
 
         Cursor cursor = db.query(
                 DBContract.CartList.TABLE_NAME,
                 null,
-                DBContract.CartList.COL_PROD_ID + " = ?",
+                selection,
                 new String[]{prod_id},
                 null,
                 null,
@@ -603,12 +636,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     cursor.getString(cursor.getColumnIndex(DBContract.CartList.COL_TOTAL)),
                     cursor.getString(cursor.getColumnIndex(DBContract.CartList.COL_ORDER_DATE))
             );
-            cursor.close();
-            db.close();
+//            cursor.close();
+//            db.close();
             return cl;
         }
-        cursor.close();
-        db.close();
+//        cursor.close();
+//        db.close();
         return cl;
     }
 
@@ -680,8 +713,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 );
                 cList.add(cl);
             }
-            cursor.close();
-            db.close();
+//            cursor.close();
+//            db.close();
             return cList;
         }
         return null;
@@ -735,13 +768,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     cursor.getString(cursor.getColumnIndex(DBContract.Orders.COL_TOTAL)),
                     cursor.getString(cursor.getColumnIndex(DBContract.Orders.COL_ORDER_MADE_DATE))
             );
-            cursor.close();
-            db.close();
+//            cursor.close();
+//            db.close();
 
             return order;
         }
-        cursor.close();
-        db.close();
+//        cursor.close();
+//        db.close();
 
         return order;
     }
@@ -772,8 +805,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 oList.add(order);
             }
         }
-        cursor.close();
-        db.close();
+//        cursor.close();
+//        db.close();
 
         return oList;
     }
@@ -801,12 +834,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     cursor.getString(cursor.getColumnIndex(DBContract.Payment.COL_STATUS))
             );
 
-            cursor.close();
-            db.close();
+//            cursor.close();
+//            db.close();
             return pay;
         }
-        cursor.close();
-        db.close();
+//        cursor.close();
+//        db.close();
 
         return null;
     }

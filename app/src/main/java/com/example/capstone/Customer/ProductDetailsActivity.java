@@ -50,7 +50,7 @@ public class ProductDetailsActivity extends AppCompatActivity implements DatePic
 
     private TextView tvName, tvVendor, tvHarga, tvQty, tvLokasi, tvDesc;
     private RecyclerView rvprodimg, rvreview;
-    private Button btnReview;
+   //private Button btnReview;
 
     private Product prod;
     private Vendor vendor;
@@ -59,6 +59,13 @@ public class ProductDetailsActivity extends AppCompatActivity implements DatePic
 
     private List<ProductImages> prodImgList;
     private String order_date = "";
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        runAsync();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,51 +93,51 @@ public class ProductDetailsActivity extends AppCompatActivity implements DatePic
                 prodImgList)
         );
 
-        btnReview.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Customer cust = checkReviewRights(prod.getId());
-                if(cust != null) {
-                    Dialog addReview = new Dialog(ProductDetailsActivity.this);
-                    addReview.setContentView(R.layout.dialog_addreview);
-
-                    EditText etComment = addReview.findViewById(R.id.etComment);
-                    Button btnCancel = addReview.findViewById(R.id.btnCancel);
-                    Button btnAddReview = addReview.findViewById(R.id.btnAddReview);
-
-                    btnCancel.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            addReview.dismiss();
-                        }
-                    });
-
-                    btnAddReview.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Review rev = new Review(
-                                    prod.getId(),
-                                    cust.getId(),
-                                    pay.getId(),
-                                    etComment.getText().toString()
-                            );
-
-                            if(helper.addReview(rev)) {
-                                Toast.makeText(getApplicationContext(),"Berhasil tambah Review", Toast.LENGTH_SHORT).show();
-                                new reviewAsync().execute(prod.getId());
-                            } else {
-                                Toast.makeText(getApplicationContext(),"Gagal tambah Review", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
-                    addReview.show();
-                }
-            }
-        });
+//        btnReview.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Customer cust = checkReviewRights(prod.getId());
+//                if(cust != null) {
+//                    Dialog addReview = new Dialog(ProductDetailsActivity.this);
+//                    addReview.setContentView(R.layout.dialog_addreview);
+//
+//                    EditText etComment = addReview.findViewById(R.id.etComment);
+//                    Button btnCancel = addReview.findViewById(R.id.btnCancel);
+//                    Button btnAddReview = addReview.findViewById(R.id.btnAddReview);
+//
+//                    btnCancel.setOnClickListener(new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View v) {
+//                            addReview.dismiss();
+//                        }
+//                    });
+//
+//                    btnAddReview.setOnClickListener(new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View v) {
+//                            Review rev = new Review(
+//                                    prod.getId(),
+//                                    cust.getId(),
+//                                    pay.getId(),
+//                                    etComment.getText().toString()
+//                            );
+//
+//                            if(helper.addReview(rev)) {
+//                                Toast.makeText(getApplicationContext(),"Berhasil tambah Review", Toast.LENGTH_SHORT).show();
+//                                new reviewAsync().execute(prod.getId());
+//                            } else {
+//                                Toast.makeText(getApplicationContext(),"Gagal tambah Review", Toast.LENGTH_SHORT).show();
+//                            }
+//                        }
+//                    });
+//                    addReview.show();
+//                }
+//            }
+//        });
     }
 
     private Customer checkReviewRights(String id) {
-        CartList cl = helper.getCartList(id);
+        CartList cl = helper.getCartList(id,1);
         Order order = helper.getOrder(cl.getOrder_id(),2);
         pay = helper.getStatusPayment(order.getId(),"1");
 
@@ -151,7 +158,7 @@ public class ProductDetailsActivity extends AppCompatActivity implements DatePic
         tvDesc = findViewById(R.id.tvDesc);
         rvprodimg = findViewById(R.id.rvprodimg);
         rvreview = findViewById(R.id.rvReview);
-        btnReview = findViewById(R.id.btnReview);
+        //btnReview = findViewById(R.id.btnReview);
 
         helper = new DatabaseHelper(this);
     }
@@ -320,6 +327,10 @@ public class ProductDetailsActivity extends AppCompatActivity implements DatePic
         params.setMargins(0, 0, 0, 55);
         snack.getView().setLayoutParams(params);
         snack.show();
+    }
+
+    public void runAsync(){
+        new reviewAsync().execute(prod.getId());
     }
 
     class reviewAsync extends AsyncTask<String, String, List<Review>> {
